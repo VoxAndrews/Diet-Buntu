@@ -19,12 +19,11 @@ check_internet
 # Initial Update and Upgrade
 sudo apt update -y && sudo apt upgrade -y
 
-# Install Latest 5.15 Kernels
+# Install Latest 5.15 Kernels (As of 16/08/2023)
 wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-headers-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
 wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-headers-5.15.126-0515126_5.15.126-0515126.202308111531_all.deb
 wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-image-unsigned-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
 wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-modules-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
-dpkg --list | grep linux-image | awk '{ print $2 }' | grep -v `uname -r` | grep -v '5.15.126' | xargs sudo apt-get -y purge
 sudo apt autoremove -y
 sudo apt autoclean -y
 sudo update-grub

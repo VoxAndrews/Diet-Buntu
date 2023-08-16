@@ -78,6 +78,7 @@ unzip master.zip
 sudo mv icewm-theme-icepick-master/IcePick /usr/share/icewm/themes/
 sudo mv icewm-theme-icepick-master/preferences /usr/share/icewm/
 sudo rm -r icewm-theme-icepick-master master.zip
+mkdir -p ~/.icewm
 sudo chown -R $USER:$USER ~/.icewm
 echo "Theme=\"IcePick/default.theme\"" > ~/.icewm/theme
 

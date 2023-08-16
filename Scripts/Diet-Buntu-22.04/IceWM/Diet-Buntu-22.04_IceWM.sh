@@ -123,7 +123,7 @@ echo "posx=502" >> $NITROGEN_FILE
 echo "posy=31" >> $NITROGEN_FILE
 echo "sizex=510" >> $NITROGEN_FILE
 echo "sizex=500" >> $NITROGEN_FILE
-echo "\n" >> $NITROGEN_FILE
+echo "" >> $NITROGEN_FILE
 echo "[nitrogen]" >> $NITROGEN_FILE
 echo "view=icon" >> $NITROGEN_FILE
 echo "recurse=true" >> $NITROGEN_FILE

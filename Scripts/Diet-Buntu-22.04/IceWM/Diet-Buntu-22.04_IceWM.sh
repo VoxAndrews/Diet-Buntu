@@ -99,8 +99,8 @@ mkdir -p ~/Documents ~/Pictures ~/Downloads ~/Music ~/Videos ~/Desktop
 # Download Default Wallpapers
 wget https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
 tar -xf budgie-backgrounds-v1.0.tar.xz
-mv budgie-backgrounds-1.0/backgrounds /usr/share/
-rm /usr/share/backgrounds/meson.build
+sudo mv budgie-backgrounds-1.0/backgrounds /usr/share/
+sudo rm /usr/share/backgrounds/meson.build
 rm -r budgie-backgrounds-v1.0.tar.xz budgie-backgrounds-1.0
 
 ## Set Background To Default

@@ -104,7 +104,7 @@ sudo rm /usr/share/backgrounds/meson.build
 rm -r budgie-backgrounds-v1.0.tar.xz budgie-backgrounds-1.0
 
 ## Set Background To Default
-# Create Nitrogen Directory
+# Create Nitrogen Config Directory
 mkdir -p $HOME/.config/nitrogen/
 
 # Define variables

@@ -43,7 +43,7 @@ done
 sudo apt update -y && sudo apt upgrade -y
 
 # Install Software and Libraries from Ubuntu
-sudo apt install -y build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm thunar pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen pineapple-pictures claws-mail
+sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm thunar pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen pineapple-pictures claws-mail
 
 # Download and Install/Build Software
 git clone --recurse-submodules https://github.com/fairyglade/ly

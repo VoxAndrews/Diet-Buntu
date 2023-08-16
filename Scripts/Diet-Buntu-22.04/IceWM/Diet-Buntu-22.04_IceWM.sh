@@ -16,6 +16,29 @@ check_internet() {
 # Call the function
 check_internet
 
+# Display a warning about theme behavior
+echo ""
+echo "///////////////////////////////////////////////////////////////////////////"
+echo "WARNING: If you enable themes, swapping themes will change your wallpaper."
+echo "Your wallpaper will be reapplied on the next reboot."
+echo "Alternatively, you can manually apply it with Nitrogen."
+echo "///////////////////////////////////////////////////////////////////////////"
+echo ""
+
+# Prompt the user for their choice of whether they want to enable or disable theme menu
+while true; do
+    read -p "Do you want to enable Theme Options? (Y/N): " yn
+    case $yn in
+        [Yy]* ) 
+            theme_option=1; 
+            break;;
+        [Nn]* ) 
+            theme_option=0; 
+            break;;
+        * ) echo "Please answer Y or N.";;
+    esac
+done
+
 # Initial Update and Upgrade
 sudo apt update -y && sudo apt upgrade -y
 
@@ -76,13 +99,37 @@ mkdir -p ~/Documents ~/Pictures ~/Downloads ~/Music ~/Videos ~/Desktop
 # Download Default Wallpapers
 wget https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
 tar -xf budgie-backgrounds-v1.0.tar.xz
-mv budgie-backgrounds-1.0/backgrounds ~/Pictures/
-rm ~/Pictures/backgrounds/meson.build
+mv budgie-backgrounds-1.0/backgrounds /usr/share/
+rm /usr/share/backgrounds/meson.build
 rm -r budgie-backgrounds-v1.0.tar.xz budgie-backgrounds-1.0
 
-# Set Background To Set
-echo "nitrogen --restore &" > ~/.icewm/startup
-chmod +x ~/.icewm/startup
+## Set Background To Default
+# Define variables
+CONFIG_FILE="$HOME/.config/nitrogen/bg-saved.cfg"
+NITROGEN_FILE="$HOME/.config/nitrogen/nitrogen.cfg"
+
+# Set Background Folder Location
+echo "[xin_-1]" > $CONFIG_FILE
+echo "file=/usr/share/backgrounds/waves-midnight.jpg" >> $CONFIG_FILE
+echo "mode=5" >> $CONFIG_FILE
+echo "bgcolor=#000000" >> $CONFIG_FILE
+
+# Overwrite the Current Background
+echo "[geometry]" > $NITROGEN_FILE
+echo "posx=502" >> $NITROGEN_FILE
+echo "posy=31" >> $NITROGEN_FILE
+echo "sizex=510" >> $NITROGEN_FILE
+echo "sizex=500" >> $NITROGEN_FILE
+echo "\n" >> $NITROGEN_FILE
+echo "[nitrogen]" >> $NITROGEN_FILE
+echo "view=icon" >> $NITROGEN_FILE
+echo "recurse=true" >> $NITROGEN_FILE
+echo "sort=alpha" >> $NITROGEN_FILE
+echo "icon_caps=false" >> $NITROGEN_FILE
+echo "dirs=/usr/share/backgrounds;" >> $NITROGEN_FILE
+
+# Apply Wallpaper On Reboot/IceWM Restart
+echo "nitrogen --restore &" >> ~/.xsessionrc
 
 # Setup Thunar
 xfconf-query -c thunar-volman -p /automount-drives/enabled -s true
@@ -90,6 +137,9 @@ xfconf-query -c thunar-volman -p /automount-media/enabled -s true
 xfconf-query -c thunar-volman -p /autobrowse/enabled -s true
 
 echo -e "[Desktop Entry]\nVersion=1.0\nName=XTerm\nComment=Use the command line\nExec=xterm\nTerminal=false\nType=Application\nIcon=xterm\nCategories=System;TerminalEmulator;" | sudo tee /usr/share/applications/xfce4-terminal.desktop > /dev/null
+
+# After installing IceWM and the IcePick theme, apply the option to the user's account
+echo "ShowThemesMenu=$theme_option" > ~/.icewm/prefoverride
 
 # Update and Upgrade Software
 sudo apt update && sudo apt upgrade

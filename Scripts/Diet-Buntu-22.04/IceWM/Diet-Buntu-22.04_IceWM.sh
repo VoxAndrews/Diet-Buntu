@@ -25,14 +25,14 @@ wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-hea
 wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-image-unsigned-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
 wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-modules-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
 dpkg --list | grep linux-image | awk '{ print $2 }' | grep -v `uname -r` | grep -v '5.15.126' | xargs sudo apt-get -y purge
-sudo apt autoremove
-sudo apt autoclean
+sudo apt autoremove -y
+sudo apt autoclean -y
 sudo update-grub
-sudo dpkg -i *.deb
+echo "yes" | sudo dpkg -i *.deb
 sudo rm *.deb
 
 # Install Software and Libraries from Ubuntu
-sudo apt install build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm thunar pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen pineapple-pictures claws-mail
+sudo apt install -y build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm thunar pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen pineapple-pictures claws-mail
 
 # Download and Install/Build Software
 git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -56,13 +56,13 @@ sudo rm -r icewm
 sudo rm -r os-depends.sh
 
 wget -c https://github.com/peazip/PeaZip/releases/download/9.3.0/peazip_9.3.0.LINUX.GTK2-1_amd64.deb
-sudo dpkg -i peazip_9.3.0.LINUX.GTK2-1_amd64.deb
+echo "yes" | sudo dpkg -i peazip_9.3.0.LINUX.GTK2-1_amd64.deb
 sudo rm peazip_9.3.0.LINUX.GTK2-1_amd64.deb
 
 echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/home:stevenpusser.list
 curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_stevenpusser.gpg > /dev/null
 sudo apt update
-sudo apt install palemoon
+sudo apt install -y palemoon
 
 # Start/Enable Systems
 sudo systemctl enable ly.service

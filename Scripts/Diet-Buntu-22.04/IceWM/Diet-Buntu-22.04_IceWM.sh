@@ -19,17 +19,6 @@ check_internet
 # Initial Update and Upgrade
 sudo apt update -y && sudo apt upgrade -y
 
-# Install Latest 5.15 Kernels (As of 16/08/2023)
-wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-headers-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
-wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-headers-5.15.126-0515126_5.15.126-0515126.202308111531_all.deb
-wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-image-unsigned-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
-wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15.126/amd64/linux-modules-5.15.126-0515126-generic_5.15.126-0515126.202308111531_amd64.deb
-sudo apt autoremove -y
-sudo apt autoclean -y
-sudo update-grub
-echo "yes" | sudo dpkg -i *.deb
-sudo rm *.deb
-
 # Install Software and Libraries from Ubuntu
 sudo apt install -y build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm thunar pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen pineapple-pictures claws-mail
 
@@ -104,6 +93,11 @@ echo -e "[Desktop Entry]\nVersion=1.0\nName=XTerm\nComment=Use the command line\
 
 # Update and Upgrade Software
 sudo apt update && sudo apt upgrade
+
+# Clean and Remove Useless Packages/Services
+sudo apt autoremove -y
+sudo apt autoclean -y
+sudo update-grub
 
 # Reboot
 sudo reboot

@@ -2,6 +2,8 @@
 
 set -e
 
+clear
+
 # Display the welcome message
 echo "///////////////////////////////////////////////////////////////////////////"
 echo "Welcome to the Diet-Buntu Installer - Version 22.04 (x64)"

@@ -79,7 +79,7 @@ if [ "$choice" == "y" ]; then
 	echo "WARNING: If you enable the Themes Menu, swapping themes will change your"
 	echo "wallpaper to the theme's default! However, your wallpaper will be reapplied"
 	echo "on the next reboot, or, if IceWM restarts. Alternatively, you can manually"
-	echo "reapply it with Nitrogen if you wish."
+	echo "re-apply it with Nitrogen if you wish."
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 

@@ -36,7 +36,7 @@ echo "Ubuntu Version: 22.04 (Jammy Jellyfish)"
 echo "Architecture: x86-64"
 echo "Window Manager: IceWM"
 echo "Version: 1.0"
-echo "Script Date: 17/08/2023 (11:36pm AWST)"
+echo "Script Date: 18/08/2023 (1:39am AWST)"
 echo ""
 echo "Would you like to continue?"
 
@@ -76,7 +76,7 @@ if [ "$choice" == "y" ]; then
 	# Display a warning about theme behavior
 	echo ""
 	echo "///////////////////////////////////////////////////////////////////////////"
-	echo "WARNING: If you enable the Themes Menu, swapping themes will change your 
+	echo "WARNING: If you enable the Themes Menu, swapping themes will change your"
 	echo "wallpaper to the theme's default! However, your wallpaper will be reapplied"
 	echo "on the next reboot, or, if IceWM restarts. Alternatively, you can manually"
 	echo "reapply it with Nitrogen if you wish."

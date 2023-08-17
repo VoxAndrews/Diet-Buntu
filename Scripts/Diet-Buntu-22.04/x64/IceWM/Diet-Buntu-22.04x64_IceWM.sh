@@ -43,9 +43,9 @@ done
 sudo apt update -y && sudo apt upgrade -y
 
 # Install Software and Libraries from Ubuntu
-sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm thunar pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen pineapple-pictures claws-mail
+sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm thunar pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen pineapple-pictures claws-mail qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools
 
-sudo snap install snap-store notepadqq kcalc
+sudo snap install snap-store kcalc
 
 # Download and Install/Build Software
 git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -76,6 +76,16 @@ echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_2
 curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_stevenpusser.gpg > /dev/null
 sudo apt update
 sudo apt install -y palemoon
+
+git clone https://github.com/tsujan/FeatherPad.git
+cd FeatherPad
+mkdir build && cd build
+cmake ..
+make
+sudo make install
+cd ..
+cd ..
+sudo rm -r FeatherPad
 
 # Start/Enable Systems
 sudo systemctl enable ly.service

@@ -9,13 +9,28 @@ echo "//////////////////////////////////////////////////////////////////////////
 echo "Welcome to the Diet-Buntu Installer - Version 22.04 (x64)"
 echo "///////////////////////////////////////////////////////////////////////////"
 echo ""
-echo "Diet-Buntu is a streamlined version of the renowned Ubuntu operating system. Designed with efficiency in mind, it stands parallel to other lightweight distributions like Xubuntu and Lubuntu. However, what sets Diet-Buntu apart is its unique construction: it's built from scratch using an Ubuntu Server Minimal Installation as its foundation. From this minimalistic starting point, essential components are meticulously added, either sourced from Ubuntu's official packages or built directly from source code."
+echo "Diet-Buntu is a streamlined version of the renowned Ubuntu operating system. 
+echo "Designed with efficiency in mind, it stands parallel to other lightweight"
+echo "distributions like Xubuntu and Lubuntu. However, what sets Diet-Buntu apart"
+echo "is its unique construction: it's built from scratch using an Ubuntu Server"
+echo "Minimal Installation as its foundation. From this minimalistic starting point,"
+echo "essential components are meticulously added, either sourced from Ubuntu's"
+echo "official packages or built directly from source code."
 echo ""
-echo "Primarily aimed at rejuvenating lower-end machines, Diet-Buntu is versatile enough to thrive in a variety of environments, from old laptops to modern workstations. The result is a lean, yet fully functional OS tailored for users seeking performance without excess."
+echo "Primarily aimed at rejuvenating lower-end machines, Diet-Buntu is versatile"
+echo "enough to thrive in a variety of environments, from old laptops to modern"
+echo "workstations. The result is a lean, yet fully functional OS tailored for users"
+echo "seeking performance without excess."
 echo ""
-echo "As the creator of Diet-Buntu, I'm relatively new to the Linux ecosystem and embarked on this project as a means to deepen my understanding of the OS and its configuration intricacies. As such, Diet-Buntu remains experimental, and there might be occasional bugs or quirks as I navigate the complexities of Linux setup and customization. Your patience and feedback are invaluable in this learning journey."
+echo "As the creator of Diet-Buntu, I'm relatively new to the Linux ecosystem and"
+echo "embarked on this project as a means to deepen my understanding of the OS and its"
+echo "configuration intricacies. As such, Diet-Buntu remains experimental, and there"
+echo "might be occasional bugs or quirks as I navigate the complexities of Linux setup"
+echo "and customization. Your patience and feedback are invaluable in this learning"
+echo "journey."
 echo ""
-echo "Diet-Buntu is not affiliated with Ubuntu and represents a fan-made modification of a pre-existing distribution."
+echo "Diet-Buntu is not affiliated with Ubuntu and represents a fan-made modification"
+echo "of a pre-existing distribution."
 echo ""
 echo "Ubuntu Version: 22.04 (Jammy Jellyfish)"
 echo "Architecture: x86-64"
@@ -61,15 +76,16 @@ if [ "$choice" == "y" ]; then
 	# Display a warning about theme behavior
 	echo ""
 	echo "///////////////////////////////////////////////////////////////////////////"
-	echo "WARNING: If you enable themes, swapping themes will change your wallpaper."
-	echo "Your wallpaper will be reapplied on the next reboot."
-	echo "Alternatively, you can manually apply it with Nitrogen."
+	echo "WARNING: If you enable the Themes Menu, swapping themes will change your 
+	echo "wallpaper to the theme's default! However, your wallpaper will be reapplied"
+	echo "on the next reboot, or, if IceWM restarts. Alternatively, you can manually"
+	echo "reapply it with Nitrogen if you wish."
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
 	# Prompt the user for their choice of whether they want to enable or disable theme menu
 	while true; do
-    		read -p "Do you want to enable Theme Options? (Y/N): " yn
+    		read -p "Do you want to enable Themes Menu? (Y/N): " yn
     		case $yn in
         		[Yy]* ) 
             			theme_option=1; 

@@ -17,6 +17,7 @@ echo "Diet-Buntu is not affiliated with Ubuntu and represents a fan-made modific
 echo ""
 echo "Ubuntu Version: 22.04 (Jammy Jellyfish)"
 echo "Architecture: x86-64"
+echo "Window Manager: IceWM"
 echo "Version: 1.0"
 echo "Script Date: 17/08/2023 (11:36pm AWST)"
 echo ""

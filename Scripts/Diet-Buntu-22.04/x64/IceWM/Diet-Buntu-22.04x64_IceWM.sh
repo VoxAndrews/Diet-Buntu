@@ -2,6 +2,9 @@
 
 set -e
 
+# Install IP Utilities Needed for Test
+sudo apt install -y iputils-ping
+
 clear
 
 # Display the welcome message

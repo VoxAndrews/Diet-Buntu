@@ -84,14 +84,14 @@ if [ "$choice" == "y" ]; then
 	clear
 
 	# Add Repositories
-	sudo add-apt-repository ppa:jurplel/qview
-	sudo apt-add-repository ppa:teejee2008/ppa
+	sudo add-apt-repository -y ppa:jurplel/qview
+	sudo apt-add-repository -y ppa:teejee2008/ppa
 
 	# Initial Update and Upgrade
 	sudo apt update -y && sudo apt upgrade -y
 
 	# Install Software and Libraries from Ubuntu
-	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen claws-mail qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator gnome-software cups printer-driver-gutenprint system-config-printer
+	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen claws-mail qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator gnome-software cups printer-driver-gutenprint system-config-printer lxrandr
 
 	# Download and Install/Build Software
 	git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -199,6 +199,14 @@ if [ "$choice" == "y" ]; then
 	# After installing IceWM and the IcePick theme, apply the option to the user's account
 	echo "ShowThemesMenu=$theme_option" > ~/.icewm/prefoverride
 
+	# Apply Resolution on Reboot/IceWM Restart
+	echo "" >> ~/.xsessionrc
+	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> ~/.xsessionrc
+	echo "xrandr_command=\$(grep \"Exec=\" ~/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> ~/.xsessionrc
+	echo "" >> ~/.xsessionrc
+	echo "# Execute the extracted command" >> ~/.xsessionrc
+	echo "eval \$xrandr_command" >> ~/.xsessionrc
+
 	# Enable Printer Service (CUPS)
 	sudo systemctl start cups
 	sudo systemctl enable cups
@@ -220,6 +228,13 @@ if [ "$choice" == "y" ]; then
 
 	# Update Bootloader
 	sudo update-grub
+
+	clear
+
+	echo "INSTALLATION HAS COMPLETED!"
+	echo ""
+	echo "Press any key to reboot the system..."
+	read -p ""
 
 	# Reboot
 	sudo reboot

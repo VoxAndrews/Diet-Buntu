@@ -297,7 +297,7 @@ if [ "$choice" == "y" ]; then
 
 	echo "INSTALLATION HAS COMPLETED!"
 	echo ""
-	echo "Press any key to reboot the system..."
+	echo "Press Enter to reboot the system..."
 	read -p ""
 
 	# Reboot

@@ -144,7 +144,7 @@ if [ "$choice" == "y" ]; then
 
 	# Check the user's choice for the Entertainment Package
 	if [ "$entertainment_option" == "1" ]; then
-		sudo apt install -y freeciv-client-gtk freeciv-sound hedgewars openttd sauerbraten pingus
+		sudo apt install -y freeciv-client-gtk freeciv-sound-standard hedgewars openttd sauerbraten pingus
 	fi
 
 	# Download and Install/Build Software

@@ -76,7 +76,13 @@ if [ "$choice" == "y" ]; then
 	# Display a warning about theme behavior
 	echo ""
 	echo "///////////////////////////////////////////////////////////////////////////"
-	echo "WARNING: If you enable the Themes Menu, swapping themes will change your"
+	echo "THEMES MENU"
+	echo ""
+	echo "This option will allow you to enable or disable the themes menu in IceWM."
+	echo "Themes are ways of giving your OS a new look, and there are a few to choose"
+	echo "from by default, as well as others online."
+	echo ""
+	echo "WARNING: If you enable the Themes Menu, swapping themes may change your"
 	echo "wallpaper to the theme's default! However, your wallpaper will be reapplied"
 	echo "on the next reboot, or, if IceWM restarts. Alternatively, you can manually"
 	echo "re-apply it with Nitrogen if you wish."
@@ -132,6 +138,45 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
+	# Display a message about enabling or disabling ClamAV Background Daemon
+	echo ""
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo "CLAMAV BACKGROUND DAEMON"
+	echo ""
+	echo "ClamAV is the Anti-Virus used on your system, and provides you with a way"
+	echo "to stay safe while using it. It has a Daemon (Program which runs in the"
+	echo "background) which automatically updates your virus database and keeps your"
+	echo "system in check. However, this Daemon consumes a lot of resources, which"
+	echo "can make it harder to run multiple pieces of software on older systems. You"
+	echo "can decide to disable this background process if you like and use Clamtk"
+	echo "to manually scan your system and keep your databases up to date, and your"
+	echo "resource usage will remain low (E.g. ~1500MB RAM usage with Daemon, ~300MB" 
+	echo "RAM usage without)."
+	echo ""
+	echo "NOTE: If you wish to re-enable it after this, at any time you can open the"
+	echo "Terminal and run these commands:"
+	echo ""
+	echo "sudo systemctl start clamav-daemon"
+	echo "sudo systemctl enable clamav-daemon"
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo ""
+
+	# Prompt the user for their choice of whether they want to enable or disable theme menu
+	while true; do
+    		read -p "Do you want to disable ClamAV Background Daemon? (Y/N): " yn
+    		case $yn in
+        		[Yy]* ) 
+            			clamav_option=1; 
+            			break;;
+        		[Nn]* ) 
+            			clamav_option=0; 
+            			break;;
+        		* ) echo "Please answer Y or N.";;
+    		esac
+	done
+
+	clear
+
 	echo ""
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo "BEGINNING INSTALLATION..."
@@ -152,6 +197,11 @@ if [ "$choice" == "y" ]; then
 	if [ "$entertainment_option" == "1" ]; then
 		sudo apt install -y freecol openttd openttd-opensfx pingus assaultcube frogatto
 	fi
+
+	if [ "$clamav_option" == "1" ]; then
+        	sudo systemctl stop clamav-daemon
+		sudo systemctl disable clamav-daemon
+    	fi
 
 	# Download and Install/Build Software
 	git clone --recurse-submodules https://github.com/fairyglade/ly

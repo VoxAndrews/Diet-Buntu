@@ -130,6 +130,8 @@ if [ "$choice" == "y" ]; then
     		esac
 	done
 
+	clear
+
 	# Add Repositories
 	sudo add-apt-repository -y ppa:jurplel/qview
 	sudo apt-add-repository -y ppa:teejee2008/ppa

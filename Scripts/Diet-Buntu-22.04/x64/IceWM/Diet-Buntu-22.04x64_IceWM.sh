@@ -106,7 +106,13 @@ if [ "$choice" == "y" ]; then
 	echo ""
 	echo "The Entertainment Package is a set of curated games that can be installed"
 	echo "onto your system. This is completly optional and will just install a"
-	echo "handful of fun games for you to enjoy!"
+	echo "handful of fun games for you to enjoy. The games included are:"
+	echo ""
+	echo "- Freeciv"
+	echo "- Hedgewars"
+	echo "- OpenTTD"
+	echo "- Cube 2: Sauerbraten"
+	echo "- Pingus"
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
@@ -136,7 +142,7 @@ if [ "$choice" == "y" ]; then
 
 	# Check the user's choice for the Entertainment Package
 	if [ "$entertainment_option" == "1" ]; then
-		sudo apt install -y freeciv-client-gtk freeciv-sound hedgewars openttd sauerbraten
+		sudo apt install -y freeciv-client-gtk freeciv-sound hedgewars openttd sauerbraten pingus
 	fi
 
 	# Download and Install/Build Software

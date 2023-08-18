@@ -117,7 +117,6 @@ if [ "$choice" == "y" ]; then
 	echo "- FreeCol"
 	echo "- OpenTTD"
 	echo "- Pingus"
-	echo "- AssaultCube"
 	echo "- Frogatto"
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
@@ -195,7 +194,7 @@ if [ "$choice" == "y" ]; then
 
 	# Check the user's choice for the Entertainment Package
 	if [ "$entertainment_option" == "1" ]; then
-		sudo apt install -y freecol openttd openttd-opensfx pingus assaultcube frogatto
+		sudo apt install -y freecol openttd openttd-opensfx pingus frogatto
 	fi
 
 	if [ "$clamav_option" == "1" ]; then

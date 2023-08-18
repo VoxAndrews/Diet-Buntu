@@ -99,6 +99,31 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
+	# Display a message about the 'Entertainment Package'
+	echo ""
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo "ENTERTAINMENT PACKAGE INSTALLATION"
+	echo ""
+	echo "The Entertainment Package is a set of curated games that can be installed"
+	echo "onto your system. This is completly optional and will just install a"
+	echo "handful of fun games for you to enjoy!"
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo ""
+
+	# Prompt the user for their choice of whether they want to enable or disable theme menu
+	while true; do
+    		read -p "Do you want to install the Entertainment Package? (Y/N): " yn
+    		case $yn in
+        		[Yy]* ) 
+            			entertainment_option=1; 
+            			break;;
+        		[Nn]* ) 
+            			entertainment_option=0; 
+            			break;;
+        		* ) echo "Please answer Y or N.";;
+    		esac
+	done
+
 	# Add Repositories
 	sudo add-apt-repository -y ppa:jurplel/qview
 	sudo apt-add-repository -y ppa:teejee2008/ppa
@@ -107,7 +132,12 @@ if [ "$choice" == "y" ]; then
 	sudo apt update -y && sudo apt upgrade -y
 
 	# Install Software and Libraries from Ubuntu
-	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen claws-mail qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator gnome-software cups printer-driver-gutenprint system-config-printer lxrandr
+	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen claws-mail qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator gnome-software cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl
+
+	# Check the user's choice for the Entertainment Package
+	if [ "$entertainment_option" == "1" ]; then
+		sudo apt install -y freeciv-client-gtk freeciv-sound hedgewars openttd sauerbraten
+	fi
 
 	# Download and Install/Build Software
 	git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -134,6 +164,10 @@ if [ "$choice" == "y" ]; then
 	echo "yes" | sudo dpkg -i peazip_9.3.0.LINUX.GTK2-1_amd64.deb
 	sudo rm peazip_9.3.0.LINUX.GTK2-1_amd64.deb
 
+	wget -c https://github.com/dave-theunsub/clamtk/releases/download/v6.16/clamtk_6.16-1_all.deb
+	echo "yes" | sudo dpkg -i clamtk_6.16-1_all.deb
+	sudo rm clamtk_6.16-1_all.deb
+
 	echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/home:stevenpusser.list
 	curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee 	/etc/apt/trusted.gpg.d/home_stevenpusser.gpg > /dev/null
 	sudo apt update
@@ -149,7 +183,7 @@ if [ "$choice" == "y" ]; then
 	cd ..
 	sudo rm -r FeatherPad
 
-	wget https://github.com/bgrabitmap/lazpaint/releases/download/v7.2.2/lazpaint7.2.2_linux64.deb
+	wget -c https://github.com/bgrabitmap/lazpaint/releases/download/v7.2.2/lazpaint7.2.2_linux64.deb
 	echo "yes" | sudo dpkg -i lazpaint7.2.2_linux64.deb
 	sudo rm lazpaint7.2.2_linux64.deb
 
@@ -162,7 +196,7 @@ if [ "$choice" == "y" ]; then
 	pacmd set-sink-mute 0 0
 
 	# Install IceWM Theme
-	wget https://github.com/vimux/icewm-theme-icepick/archive/refs/heads/master.zip
+	wget -c https://github.com/vimux/icewm-theme-icepick/archive/refs/heads/master.zip
 	unzip master.zip
 	sudo mv icewm-theme-icepick-master/IcePick /usr/share/icewm/themes/
 	sudo mv icewm-theme-icepick-master/preferences /usr/share/icewm/
@@ -175,7 +209,7 @@ if [ "$choice" == "y" ]; then
 	mkdir -p ~/Documents ~/Pictures ~/Downloads ~/Music ~/Videos ~/Desktop
 
 	# Download Default Wallpapers
-	wget https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
+	wget -c https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
 	tar -xf budgie-backgrounds-v1.0.tar.xz
 	sudo mv budgie-backgrounds-1.0/backgrounds /usr/share/
 	sudo rm /usr/share/backgrounds/meson.build

@@ -108,11 +108,11 @@ if [ "$choice" == "y" ]; then
 	echo "onto your system. This is completly optional and will just install a"
 	echo "handful of fun games for you to enjoy. The games included are:"
 	echo ""
-	echo "- Freeciv"
-	echo "- Hedgewars"
+	echo "- FreeCol"
 	echo "- OpenTTD"
-	echo "- Cube 2: Sauerbraten"
 	echo "- Pingus"
+	echo "- AssaultCube"
+	echo "- Frogatto"
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
@@ -131,6 +131,12 @@ if [ "$choice" == "y" ]; then
 	done
 
 	clear
+
+	echo ""
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo "BEGINNING INSTALLATION..."
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo ""
 
 	# Add Repositories
 	sudo add-apt-repository -y ppa:jurplel/qview

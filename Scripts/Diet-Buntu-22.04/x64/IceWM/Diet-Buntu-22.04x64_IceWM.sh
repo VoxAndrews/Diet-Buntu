@@ -36,7 +36,7 @@ echo "Ubuntu Version: 22.04 (Jammy Jellyfish)"
 echo "Architecture: x86-64"
 echo "Window Manager: IceWM"
 echo "Version: 1.0"
-echo "Script Date: 18/08/2023 (1:39am AWST)"
+echo "Script Date: 19/08/2023 (8:59pm AWST)"
 echo ""
 echo "Would you like to continue?"
 
@@ -352,7 +352,14 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
+	echo "///////////////////////////////////////////////////////////////////////////"
 	echo "INSTALLATION HAS COMPLETED!"
+	echo ""
+	echo "Thankyou for installing Diet-Buntu! For any feedback or bug reports, please"
+	echo "go online to the script's repository at:"
+	echo ""
+	echo "https://github.com/VoxAndrews/Diet-Buntu/"
+	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 	echo "Press Enter to reboot the system..."
 	read -p ""

@@ -27,7 +27,7 @@ I wanted to make sure this came with a few different things so people could have
 This doesn't come with video drivers (although audio drivers are included), as well as other things you may need. You'll need to do a bit of manual configuration, but I hope what I've provided will give you a good base to work from. Also, this has currently been tested with a single monitor and single drive setup. I'm hoping to test things more extensively in the future, but for now, I can confirm that it's working as intended on Virtual Machines such as Hyper-V and VirtualBox. My hope is to conduct real hardware tests soon, but if others would like to before me, feel free to leave any bugs in the Issues section of the repository.
 
 ## Installation
-1. Install the version of Ubuntu Server which corresponds to the script that you wish to install (E.g. `Ubuntu Server 22.04` would require `Diet-Buntu-22.04x64_IceWM.sh`)
+1. Install the version of Ubuntu Server which corresponds to the script that you wish to install (E.g. `Ubuntu Server 22.04` would require `Diet-Buntu-22.04x64_IceWM.sh`). Make sure to select a `Minimal Install` when installing the OS
 2. Download the script you need using the `wget` command (E.g. `wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Scripts/Diet-Buntu-22.04/x64/IceWM/Diet-Buntu-22.04x64_IceWM.sh`)
 3. Run the script with `chmod +x` (E.g. `chmod +x Diet-Buntu-22.04x64_IceWM.sh && ./Diet-Buntu-22.04x64_IceWM.sh`). You may need to agree to some prompts and reset some services during installation, the script will let you know when it needs this to be done
 4. Follow the prompts and wait for the script to finish!

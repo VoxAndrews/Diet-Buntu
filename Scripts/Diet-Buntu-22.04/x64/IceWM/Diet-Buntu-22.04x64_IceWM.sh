@@ -278,6 +278,14 @@ if [ "$choice" == "y" ]; then
 	sudo rm /usr/share/backgrounds/meson.build
 	rm -r budgie-backgrounds-v1.0.tar.xz budgie-backgrounds-1.0
 
+	wget -c wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND1.png
+	wget -c wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND2.png
+	wget -c wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND3.png
+
+	sudo mv diet-buntu_BACKGROUND1.png /usr/share/backgrounds/
+	sudo mv diet-buntu_BACKGROUND2.png /usr/share/backgrounds/
+	sudo mv diet-buntu_BACKGROUND3.png /usr/share/backgrounds/
+
 	## Set Background To Default
 	# Create Nitrogen Config Directory
 	mkdir -p $HOME/.config/nitrogen/
@@ -288,7 +296,7 @@ if [ "$choice" == "y" ]; then
 
 	# Set Background Folder Location
 	echo "[xin_-1]" > $CONFIG_FILE
-	echo "file=/usr/share/backgrounds/waves-midnight.jpg" >> $CONFIG_FILE
+	echo "file=/usr/share/backgrounds/diet-buntu_BACKGROUND1.png" >> $CONFIG_FILE
 	echo "mode=5" >> $CONFIG_FILE
 	echo "bgcolor=#000000" >> $CONFIG_FILE
 

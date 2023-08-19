@@ -278,9 +278,9 @@ if [ "$choice" == "y" ]; then
 	sudo rm /usr/share/backgrounds/meson.build
 	rm -r budgie-backgrounds-v1.0.tar.xz budgie-backgrounds-1.0
 
-	wget -c wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND1.png
-	wget -c wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND2.png
-	wget -c wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND3.png
+	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND1.png
+	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND2.png
+	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND3.png
 
 	sudo mv diet-buntu_BACKGROUND1.png /usr/share/backgrounds/
 	sudo mv diet-buntu_BACKGROUND2.png /usr/share/backgrounds/

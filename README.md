@@ -44,4 +44,9 @@ The script will create a few default folders for you (Pictures, Documents, Video
 - Installing the OS in a Virtual Machine (E.g. VirtualBox or Hyper-V) and playing some games may cause weird mouse behaviour in-game (E.g. The camera in some First-Person games will spin uncontrollably). Not sure if this will carry over onto real hardware at this time.
 - Changing the resolution of the screen with LXRandR will cause the current wallpaper to disappear/revert to the current theme's default.
 
+<details>
+<summary>Screenshots</summary>
+<img src="https://apaskulin.github.io/waxtechnical/images/pup.jpg" width="720">
+</details>
+
 **Diet-Buntu is not affiliated with Ubuntu and represents a fan-made modification of a pre-existing distribution.**

@@ -45,8 +45,12 @@ The script will create a few default folders for you (Pictures, Documents, Video
 - Changing the resolution of the screen with LXRandR will cause the current wallpaper to disappear/revert to the current theme's default.
 
 <details>
-<summary>Screenshots</summary>
-<img src="https://apaskulin.github.io/waxtechnical/images/pup.jpg" width="720">
+<summary><b>Screenshots</b></summary>
+<br>
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot1-Background_1.png" width="720">
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot4-Ly_1.png" width="720">
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot5-Desktop_1.png" width="720">
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot5-Desktop_2.png" width="720">
 </details>
 
 **Diet-Buntu is not affiliated with Ubuntu and represents a fan-made modification of a pre-existing distribution.**

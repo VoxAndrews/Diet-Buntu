@@ -35,8 +35,8 @@ echo ""
 echo "Ubuntu Version: 22.04 (Jammy Jellyfish)"
 echo "Architecture: x86-64"
 echo "Window Manager: IceWM"
-echo "Version: 1.0"
-echo "Script Date: 19/08/2023 (8:59pm AWST)"
+echo "Version: 1.01"
+echo "Script Date: 26/08/2023 (11:27pm AWST)"
 echo ""
 echo "Would you like to continue?"
 
@@ -98,6 +98,35 @@ if [ "$choice" == "y" ]; then
             			break;;
         		[Nn]* ) 
             			theme_option=0; 
+            			break;;
+        		* ) echo "Please answer Y or N.";;
+    		esac
+	done
+	
+	clear
+
+	# Display a message about the 'Utility Software Package'
+	echo ""
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo "UTILITY SOFTWARE PACKAGE INSTALLATION"
+	echo ""
+	echo "The Utility Software Package includes essential utility software like:"
+	echo "- LibreOffice: A powerful office suite."
+	echo "- Claws Mail: An email client."
+	echo "- GNOME Software: Software Center for application management."
+	echo "- LazPaint: A basic image editor program"
+	echo "///////////////////////////////////////////////////////////////////////////"
+	echo ""
+
+	# Prompt the user for their choice
+	while true; do
+    		read -p "Do you want to install the Utility Software Package? (Y/N): " yn
+    		case $yn in
+        		[Yy]* ) 
+            			utility_option=1; 
+            			break;;
+        		[Nn]* ) 
+            			utility_option=0; 
             			break;;
         		* ) echo "Please answer Y or N.";;
     		esac
@@ -190,7 +219,16 @@ if [ "$choice" == "y" ]; then
 	sudo apt update -y && sudo apt upgrade -y
 
 	# Install Software and Libraries from Ubuntu
-	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol libreoffice libreoffice-help-en-us gvfs-backends gvfs-fuse nitrogen claws-mail qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator gnome-software cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl
+	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol gvfs-backends gvfs-fuse nitrogen qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl
+
+	# Check the user's choice for the Utility Software Package
+	if [ "$utility_option" == "1" ]; then
+    		sudo apt install -y libreoffice libreoffice-help-en-us claws-mail gnome-software
+
+		wget -c https://github.com/bgrabitmap/lazpaint/releases/download/v7.2.2/lazpaint7.2.2_linux64.deb
+		echo "yes" | sudo dpkg -i lazpaint7.2.2_linux64.deb
+		sudo rm lazpaint7.2.2_linux64.deb
+	fi
 
 	# Check the user's choice for the Entertainment Package
 	if [ "$entertainment_option" == "1" ]; then
@@ -245,10 +283,6 @@ if [ "$choice" == "y" ]; then
 	cd ..
 	cd ..
 	sudo rm -r FeatherPad
-
-	wget -c https://github.com/bgrabitmap/lazpaint/releases/download/v7.2.2/lazpaint7.2.2_linux64.deb
-	echo "yes" | sudo dpkg -i lazpaint7.2.2_linux64.deb
-	sudo rm lazpaint7.2.2_linux64.deb
 
 	# Start/Enable Systems
 	sudo systemctl enable ly.service

@@ -235,6 +235,7 @@ if [ "$choice" == "y" ]; then
 		sudo apt install -y freecol openttd openttd-opensfx pingus frogatto
 	fi
 
+	# Check the user wants to stop the clamav daemon
 	if [ "$clamav_option" == "1" ]; then
         	sudo systemctl stop clamav-daemon
 		sudo systemctl disable clamav-daemon

@@ -2,10 +2,14 @@
 
 set -e
 
+echo "Debug: Installing IP Utilities" >> ~/debug.txt
+
 # Install IP Utilities Needed for Test
 sudo apt install -y iputils-ping dialog
 
 clear
+
+echo "Debug: Displaying welcome message" >> ~/debug.txt
 
 # Display the welcome message
 echo "///////////////////////////////////////////////////////////////////////////"
@@ -51,6 +55,8 @@ done
 # Convert the choice to lowercase to handle both upper and lower case inputs
 choice=$(echo $choice | tr '[:upper:]' '[:lower:]')
 
+echo "Debug: Checking internet connection" >> ~/debug.txt
+
 # Check the user's choice
 if [ "$choice" == "y" ]; then
 	echo "Proceeding with the script..."
@@ -72,6 +78,8 @@ if [ "$choice" == "y" ]; then
 	check_internet
 
 	clear
+
+	echo "Debug: Displaying Themes Menu" >> ~/debug.txt
 
 	# Display a warning about theme behavior
 	echo ""
@@ -105,6 +113,8 @@ if [ "$choice" == "y" ]; then
 	
 	clear
 
+	echo "Debug: Displaying Utility Software Package message" >> ~/debug.txt
+
 	# Display a message about the 'Utility Software Package'
 	echo ""
 	echo "///////////////////////////////////////////////////////////////////////////"
@@ -133,6 +143,8 @@ if [ "$choice" == "y" ]; then
 	done
 
 	clear
+
+	echo "Debug: Displaying Utility Software Package message" >> ~/debug.txt
 
 	# Display a message about the 'Entertainment Package'
 	echo ""
@@ -165,6 +177,8 @@ if [ "$choice" == "y" ]; then
 	done
 
 	clear
+
+	echo "Debug: Displaying ClamAV Background Daemon message" >> ~/debug.txt
 
 	# Display a message about enabling or disabling ClamAV Background Daemon
 	echo ""
@@ -211,12 +225,18 @@ if [ "$choice" == "y" ]; then
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
+	echo "Debug: Adding repositories" >> ~/debug.txt
+
 	# Add Repositories
 	sudo add-apt-repository -y ppa:jurplel/qview
 	sudo apt-add-repository -y ppa:teejee2008/ppa
 
+	echo "Debug: Performing initial update and upgrade" >> ~/debug.txt
+
 	# Initial Update and Upgrade
 	sudo apt update -y && sudo apt upgrade -y
+
+	echo "Debug: Installing software and libraries from Ubuntu" >> ~/debug.txt
 
 	# Install Software and Libraries from Ubuntu
 	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol gvfs-backends gvfs-fuse nitrogen qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl
@@ -240,6 +260,8 @@ if [ "$choice" == "y" ]; then
         	sudo systemctl stop clamav-daemon
 		sudo systemctl disable clamav-daemon
     	fi
+
+	echo "Debug: Downloading and installing/building software" >> ~/debug.txt
 
 	# Download and Install/Build Software
 	git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -303,8 +325,12 @@ if [ "$choice" == "y" ]; then
 	sudo chown -R $USER:$USER ~/.icewm
 	echo "Theme=\"IcePick/default.theme\"" > ~/.icewm/theme
 
-	# Create Default Files
+	echo "Debug: Creating default folders" >> ~/debug.txt
+
+	# Create Default Folders
 	mkdir -p ~/Documents ~/Pictures ~/Downloads ~/Music ~/Videos ~/Desktop
+
+	echo "Debug: Downloading default wallpapers" >> ~/debug.txt
 
 	# Download Default Wallpapers
 	wget -c https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
@@ -363,6 +389,8 @@ if [ "$choice" == "y" ]; then
 	echo "# Execute the extracted command" >> ~/.xsessionrc
 	echo "eval \$xrandr_command" >> ~/.xsessionrc
 
+	echo "Debug: Enabling printer service (CUPS)" >> ~/debug.txt
+
 	# Enable Printer Service (CUPS)
 	sudo systemctl start cups
 	sudo systemctl enable cups
@@ -372,8 +400,12 @@ if [ "$choice" == "y" ]; then
 	# Add Daemon's to Startup
 	echo "xscreensaver -nosplash &" >> ~/.xsessionrc
 
+	echo "Debug: Updating and upgrading software" >> ~/debug.txt
+
 	# Update and Upgrade Software
 	sudo apt update && sudo apt upgrade
+
+	echo "Debug: Cleaning and removing orphaned files/data" >> ~/debug.txt
 
 	# Remove Unnecessary Packages
 	sudo apt remove lximage-qt qt5-assistant
@@ -387,6 +419,8 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
+	echo "Debug: Displaying installation completion message" >> ~/debug.txt
+
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo "INSTALLATION HAS COMPLETED!"
 	echo ""
@@ -398,6 +432,8 @@ if [ "$choice" == "y" ]; then
 	echo ""
 	echo "Press Enter to reboot the system..."
 	read -p ""
+
+	echo "Debug: Rebooting" >> ~/debug.txt
 
 	# Reboot
 	sudo reboot

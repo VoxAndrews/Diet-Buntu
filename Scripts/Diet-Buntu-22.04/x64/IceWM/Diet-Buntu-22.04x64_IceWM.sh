@@ -144,7 +144,7 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
-	echo "Debug: Displaying Utility Software Package message" >> ~/debug.txt
+	echo "Debug: Displaying Entertainment Package message" >> ~/debug.txt
 
 	# Display a message about the 'Entertainment Package'
 	echo ""

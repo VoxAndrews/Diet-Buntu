@@ -385,8 +385,6 @@ if [ "$choice" == "y" ]; then
 	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$the_user/.icewm/preferences
 
 	# Apply Resolution on Reboot/IceWM Restart
-	chown $the_user:$the_user /home/$the_user/.xsessionrc
-
 	echo "" >> /home/$the_user/.xsessionrc
 	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> /home/$the_user/.xsessionrc
 	echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> /home/$the_user/.xsessionrc
@@ -409,6 +407,8 @@ if [ "$choice" == "y" ]; then
 
 	# Add Daemon's to Startup
 	echo "xscreensaver -nosplash &" >> /home/$the_user/.xsessionrc
+
+	chown $the_user:$the_user /home/$the_user/.xsessionrc
 
 	echo "Debug: Updating and upgrading software" >> /home/$the_user/debug.txt
 

@@ -46,8 +46,8 @@ echo ""
 echo "Ubuntu Version: 22.04 (Jammy Jellyfish)"
 echo "Architecture: x86-64"
 echo "Window Manager: IceWM"
-echo "Version: 1.1"
-echo "Script Date: 10/10/2023 (04:29pm AWST)"
+echo "Version: 1.2"
+echo "Script Date: 10/10/2023 (07:07pm AWST)"
 echo ""
 echo "Would you like to continue?"
 
@@ -96,11 +96,6 @@ if [ "$choice" == "y" ]; then
 	echo "This option will allow you to enable or disable the themes menu in IceWM."
 	echo "Themes are ways of giving your OS a new look, and there are a few to choose"
 	echo "from by default, as well as others online."
-	echo ""
-	echo "WARNING: If you enable the Themes Menu, swapping themes may change your"
-	echo "wallpaper to the theme's default! However, your wallpaper will be reapplied"
-	echo "on the next reboot, or, if IceWM restarts. Alternatively, you can manually"
-	echo "re-apply it with Nitrogen if you wish."
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
@@ -246,7 +241,7 @@ if [ "$choice" == "y" ]; then
 	echo "Debug: Installing software and libraries from Ubuntu" >> /home/$the_user/debug.txt
 
 	# Install Software and Libraries from Ubuntu
-	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol gvfs-backends gvfs-fuse nitrogen qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl
+	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools
 
 	# Check the user's choice for the Utility Software Package
 	if [ "$utility_option" == "1" ]; then
@@ -347,7 +342,7 @@ if [ "$choice" == "y" ]; then
 	# Download Default Wallpapers
 	wget -c https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
 	tar -xf budgie-backgrounds-v1.0.tar.xz
-	sudo mv budgie-backgrounds-1.0/backgrounds /usr/share/
+	sudo mv budgie-backgrounds-1.0/backgrounds /home/$the_user/Pictures/
 	sudo rm /usr/share/backgrounds/meson.build
 	rm -r budgie-backgrounds-v1.0.tar.xz budgie-backgrounds-1.0
 
@@ -355,45 +350,12 @@ if [ "$choice" == "y" ]; then
 	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND2_4K.png
 	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND3_4K.png
 
-	sudo mv diet-buntu_BACKGROUND1_4K.png /usr/share/backgrounds/
-	sudo mv diet-buntu_BACKGROUND2_4K.png /usr/share/backgrounds/
-	sudo mv diet-buntu_BACKGROUND3_4K.png /usr/share/backgrounds/
+	sudo mv diet-buntu_BACKGROUND1_4K.png /home/$the_user/Pictures/backgrounds/
+	sudo mv diet-buntu_BACKGROUND2_4K.png /home/$the_user/Pictures/backgrounds/
+	sudo mv diet-buntu_BACKGROUND3_4K.png /home/$the_user/Pictures/backgrounds/
 
-	## Set Background To Default
-	# Create Nitrogen Config Directory
-	mkdir -p /home/$the_user/.config/nitrogen/
-
-	# Define variables
-	CONFIG_DIR="/home/$the_user/.config/nitrogen/"
-	CONFIG_FILE="${CONFIG_DIR}bg-saved.cfg"
-	NITROGEN_FILE="${CONFIG_DIR}nitrogen.cfg"
-
-	# Create Nitrogen Config Directory
-	mkdir -p $CONFIG_DIR
-
-	# Set Background Folder Location
-	echo "[xin_-1]" > $CONFIG_FILE
-	echo "file=/usr/share/backgrounds/diet-buntu_BACKGROUND1_4K.png" >> $CONFIG_FILE
-	echo "mode=5" >> $CONFIG_FILE
-	echo "bgcolor=#000000" >> $CONFIG_FILE
-
-	# Overwrite the Current Background
-	echo "[geometry]" > $NITROGEN_FILE
-	echo "posx=502" >> $NITROGEN_FILE
-	echo "posy=31" >> $NITROGEN_FILE
-	echo "sizex=510" >> $NITROGEN_FILE
-	echo "sizex=500" >> $NITROGEN_FILE
-	echo "" >> $NITROGEN_FILE
-	echo "[nitrogen]" >> $NITROGEN_FILE
-	echo "view=icon" >> $NITROGEN_FILE
-	echo "recurse=true" >> $NITROGEN_FILE
-	echo "sort=alpha" >> $NITROGEN_FILE
-	echo "icon_caps=false" >> $NITROGEN_FILE
-	echo "dirs=/usr/share/backgrounds;" >> $NITROGEN_FILE
-
-	# Apply Wallpaper On Reboot
-	echo "nitrogen --restore &" >> /home/$the_user/.xsessionrc
-	chown $the_user:$the_user /home/$the_user/.xsessionrc
+	# Set default wallpaper
+	pcmanfm --set-wallpaper="/home/$the_user/Pictures/backgrounds/diet-buntu_BACKGROUND2_4K.png"
 
 	# Check if the .icewm folder exists, if not create it
 	if [ ! -d "/home/$the_user/.icewm" ]; then
@@ -408,10 +370,9 @@ if [ "$choice" == "y" ]; then
 	cp /usr/share/icewm/preferences /home/$the_user/.icewm/preferences
 	chown $the_user:$the_user /home/$the_user/.icewm/preferences
 
-	# Apply Wallpaper When Restarting IceWM
+	# Create IceWM Startup File
 	touch /home/$the_user/.icewm/startup
 	chmod +x /home/$the_user/.icewm/startup
-	echo "icesh guievents | awk '/startup|restart/ { system(\"nitrogen --restore &\") }'" > /home/$the_user/.icewm/startup
 
 	# Navigate back to the user's home directory
 	cd /home/$the_user
@@ -420,6 +381,8 @@ if [ "$choice" == "y" ]; then
 	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$the_user/.icewm/preferences
 
 	# Apply Resolution on Reboot/IceWM Restart
+	chown $the_user:$the_user /home/$the_user/.xsessionrc
+
 	echo "" >> /home/$the_user/.xsessionrc
 	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> /home/$the_user/.xsessionrc
 	echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> /home/$the_user/.xsessionrc
@@ -461,6 +424,61 @@ if [ "$choice" == "y" ]; then
 	sudo update-grub
 
 	sudo chown $the_user:$the_user /home/$the_user/debug.txt
+
+	echo "Debug: Adding custom scripts" >> /home/$the_user/debug.txt
+
+	# Create the .scripts folder if it doesn't exist
+	if [ ! -d "/home/$the_user/.scripts" ]; then
+  		mkdir "/home/$the_user/.scripts"
+	fi
+
+	# Create the desktop_icon_scan.sh script
+	cat << 'EOF' > "/home/$the_user/.scripts/desktop_icon_scan.sh"
+	#!/bin/bash
+
+	# Define the desktop directory and applications directory
+	desktop_dir="\$HOME/Desktop"
+	applications_dir="/usr/share/applications"
+
+	# List of files to exclude
+	exclude=("snapd-user-session-agent.desktop" "snap-handler.desktop" "gnome-mimeapps.list" "additional-drivers.desktop" "defaults.list" "mimeinfo.cache")
+
+	# Function to update desktop icons
+	update_icons() {
+  		# Remove all symbolic links from the desktop directory
+  		find "\$desktop_dir" -type l -exec rm {} \\;
+
+  		# Create new symbolic links
+  		for app in "\$applications_dir"/*.desktop; do
+    			# Extract the filename from the path
+    			filename=\$(basename "\$app")
+    
+   			# Check if the file is in the exclude list
+    			if [[ ! " \${exclude[@]} " =~ " \${filename} " ]]; then
+      				ln -s "\$app" "\$desktop_dir"
+    			fi
+  		done
+	}
+
+	# Initial update
+	update_icons
+
+	# Monitor the applications directory for changes
+	inotifywait -m -e create,delete "\$applications_dir" | while read -r directory events filename; do
+  		# Update icons if a .desktop file is added or removed
+  		if [[ "\$filename" == *.desktop ]]; then
+    			update_icons
+  		fi
+	done
+	EOF
+
+	# Set permissions
+	chmod +x "/home/$the_user/.scripts/desktop_icon_scan.sh"
+	chown $the_user:$the_user "/home/$the_user/.scripts"
+	chown $the_user:$the_user "/home/$the_user/.scripts/desktop_icon_scan.sh"
+
+	# Add to startup
+	echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >> /home/$the_user/.icewm/startup
 
 	clear
 

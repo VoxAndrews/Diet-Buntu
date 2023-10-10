@@ -2,14 +2,21 @@
 
 set -e
 
-echo "Debug: Installing IP Utilities" >> ~/debug.txt
+# Determine the user who will own the files/directories
+if [ -n "$SUDO_USER" ]; then
+    the_user=$SUDO_USER
+else
+    the_user=$USER
+fi
+
+echo "Debug: Installing IP Utilities" >> /home/$the_user/debug.txt
 
 # Install IP Utilities Needed for Test
 sudo apt install -y iputils-ping dialog
 
 clear
 
-echo "Debug: Displaying welcome message" >> ~/debug.txt
+echo "Debug: Displaying welcome message" >> /home/$the_user/debug.txt
 
 # Display the welcome message
 echo "///////////////////////////////////////////////////////////////////////////"
@@ -55,7 +62,7 @@ done
 # Convert the choice to lowercase to handle both upper and lower case inputs
 choice=$(echo $choice | tr '[:upper:]' '[:lower:]')
 
-echo "Debug: Checking internet connection" >> ~/debug.txt
+echo "Debug: Checking internet connection" >> /home/$the_user/debug.txt
 
 # Check the user's choice
 if [ "$choice" == "y" ]; then
@@ -79,7 +86,7 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
-	echo "Debug: Displaying Themes Menu" >> ~/debug.txt
+	echo "Debug: Displaying Themes Menu" >> /home/$the_user/debug.txt
 
 	# Display a warning about theme behavior
 	echo ""
@@ -113,7 +120,7 @@ if [ "$choice" == "y" ]; then
 	
 	clear
 
-	echo "Debug: Displaying Utility Software Package message" >> ~/debug.txt
+	echo "Debug: Displaying Utility Software Package message" >> /home/$the_user/debug.txt
 
 	# Display a message about the 'Utility Software Package'
 	echo ""
@@ -144,7 +151,7 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
-	echo "Debug: Displaying Entertainment Package message" >> ~/debug.txt
+	echo "Debug: Displaying Entertainment Package message" >> /home/$the_user/debug.txt
 
 	# Display a message about the 'Entertainment Package'
 	echo ""
@@ -178,7 +185,7 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
-	echo "Debug: Displaying ClamAV Background Daemon message" >> ~/debug.txt
+	echo "Debug: Displaying ClamAV Background Daemon message" >> /home/$the_user/debug.txt
 
 	# Display a message about enabling or disabling ClamAV Background Daemon
 	echo ""
@@ -225,18 +232,18 @@ if [ "$choice" == "y" ]; then
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
-	echo "Debug: Adding repositories" >> ~/debug.txt
+	echo "Debug: Adding repositories" >> /home/$the_user/debug.txt
 
 	# Add Repositories
 	sudo add-apt-repository -y ppa:jurplel/qview
 	sudo apt-add-repository -y ppa:teejee2008/ppa
 
-	echo "Debug: Performing initial update and upgrade" >> ~/debug.txt
+	echo "Debug: Performing initial update and upgrade" >> /home/$the_user/debug.txt
 
 	# Initial Update and Upgrade
 	sudo apt update -y && sudo apt upgrade -y
 
-	echo "Debug: Installing software and libraries from Ubuntu" >> ~/debug.txt
+	echo "Debug: Installing software and libraries from Ubuntu" >> /home/$the_user/debug.txt
 
 	# Install Software and Libraries from Ubuntu
 	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol gvfs-backends gvfs-fuse nitrogen qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl
@@ -261,7 +268,7 @@ if [ "$choice" == "y" ]; then
 		sudo systemctl disable clamav-daemon
     	fi
 
-	echo "Debug: Downloading and installing/building software" >> ~/debug.txt
+	echo "Debug: Downloading and installing/building software" >> /home/$the_user/debug.txt
 
 	# Download and Install/Build Software
 	git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -321,16 +328,16 @@ if [ "$choice" == "y" ]; then
 	sudo mv icewm-theme-icepick-master/IcePick /usr/share/icewm/themes/
 	sudo mv icewm-theme-icepick-master/preferences /usr/share/icewm/
 	sudo rm -r icewm-theme-icepick-master master.zip
-	mkdir -p ~/.icewm
-	sudo chown -R $USER:$USER ~/.icewm
-	echo "Theme=\"IcePick/default.theme\"" > ~/.icewm/theme
+	mkdir -p /home/$the_user/.icewm
+	sudo chown -R $the_user:$the_user /home/$the_user/.icewm
+	echo "Theme=\"IcePick/default.theme\"" > /home/$the_user/.icewm/theme
 
-	echo "Debug: Creating default folders" >> ~/debug.txt
+	echo "Debug: Creating default folders" >> /home/$the_user/debug.txt
 
 	# Create Default Folders
-	mkdir -p ~/Documents ~/Pictures ~/Downloads ~/Music ~/Videos ~/Desktop
+	mkdir -p /home/$the_user/Documents /home/$the_user/Pictures /home/$the_user/Downloads /home/$the_user/Music /home/$the_user/Videos /home/$the_user/Desktop
 
-	echo "Debug: Downloading default wallpapers" >> ~/debug.txt
+	echo "Debug: Downloading default wallpapers" >> /home/$the_user/debug.txt
 
 	# Download Default Wallpapers
 	wget -c https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
@@ -376,46 +383,47 @@ if [ "$choice" == "y" ]; then
 	echo "dirs=/usr/share/backgrounds;" >> $NITROGEN_FILE
 
 	# Apply Wallpaper On Reboot/IceWM Restart
-	echo "nitrogen --restore &" >> ~/.xsessionrc
+	echo "nitrogen --restore &" >> /home/$the_user/.xsessionrc
+	chown $the_user:$the_user /home/$the_user/.xsessionrc
 
 	# Check if the .icewm folder exists, if not create it
-	if [ ! -d "/home/$SUDO_USER/.icewm" ]; then
-    		mkdir -p /home/$SUDO_USER/.icewm
-    		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.icewm
+	if [ ! -d "/home/the_user/.icewm" ]; then
+    		mkdir -p /home/$the_user/.icewm
+    		chown $the_user:$the_user /home/$the_user/.icewm
 	fi
 
 	# Overwrite the preferences file in the user's .icewm folder with the one from /usr/share/icewm/
-	cp /usr/share/icewm/preferences /home/$SUDO_USER/.icewm/preferences
-	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.icewm/preferences
+	cp /usr/share/icewm/preferences /home/$the_user/.icewm/preferences
+	chown $the_user:$the_user /home/$the_user/.icewm/preferences
 
 	# Append the lines to the preferences file, using the value of $theme_option
-	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$SUDO_USER/.icewm/preferences
+	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$the_user/.icewm/preferences
 
 	# Apply Resolution on Reboot/IceWM Restart
-	echo "" >> ~/.xsessionrc
-	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> ~/.xsessionrc
-	echo "xrandr_command=\$(grep \"Exec=\" ~/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> ~/.xsessionrc
-	echo "" >> ~/.xsessionrc
-	echo "# Execute the extracted command" >> ~/.xsessionrc
-	echo "eval \$xrandr_command" >> ~/.xsessionrc
+	echo "" >> /home/$the_user/.xsessionrc
+	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> /home/$the_user/.xsessionrc
+	echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> /home/$the_user/.xsessionrc
+	echo "" >> /home/$the_user/.xsessionrc
+	echo "# Execute the extracted command" >> /home/$the_user/.xsessionrc
+	echo "eval \$xrandr_command" >> /home/$the_user/.xsessionrc
 
-	echo "Debug: Enabling printer service (CUPS)" >> ~/debug.txt
+	echo "Debug: Enabling printer service (CUPS)" >> /home/$the_user/debug.txt
 
 	# Enable Printer Service (CUPS)
 	sudo systemctl start cups
 	sudo systemctl enable cups
 
-	sudo usermod -aG lpadmin $USER
+	sudo usermod -aG lpadmin $the_user
 
 	# Add Daemon's to Startup
-	echo "xscreensaver -nosplash &" >> ~/.xsessionrc
+	echo "xscreensaver -nosplash &" >> /home/$the_user/.xsessionrc
 
-	echo "Debug: Updating and upgrading software" >> ~/debug.txt
+	echo "Debug: Updating and upgrading software" >> /home/$the_user/debug.txt
 
 	# Update and Upgrade Software
 	sudo apt update && sudo apt upgrade
 
-	echo "Debug: Cleaning and removing orphaned files/data" >> ~/debug.txt
+	echo "Debug: Cleaning and removing orphaned files/data" >> /home/$the_user/debug.txt
 
 	# Remove Unnecessary Packages
 	sudo apt remove lximage-qt qt5-assistant
@@ -429,7 +437,7 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
-	echo "Debug: Displaying installation completion message" >> ~/debug.txt
+	echo "Debug: Displaying installation completion message" >> /home/$the_user/debug.txt
 
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo "INSTALLATION HAS COMPLETED!"
@@ -443,7 +451,7 @@ if [ "$choice" == "y" ]; then
 	echo "Press Enter to reboot the system..."
 	read -p ""
 
-	echo "Debug: Rebooting" >> ~/debug.txt
+	echo "Debug: Rebooting" >> /home/$the_user/debug.txt
 
 	# Reboot
 	sudo reboot

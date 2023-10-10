@@ -337,6 +337,11 @@ if [ "$choice" == "y" ]; then
 	# Create Default Folders
 	mkdir -p /home/$the_user/Documents /home/$the_user/Pictures /home/$the_user/Downloads /home/$the_user/Music /home/$the_user/Videos /home/$the_user/Desktop
 
+	# Fix permissions (either here or right after each folder is created)
+	for folder in Desktop Documents Downloads Music Pictures Videos; do
+  		sudo chown $the_user:$the_user /home/$the_user/$folder
+	done
+
 	echo "Debug: Downloading default wallpapers" >> /home/$the_user/debug.txt
 
 	# Download Default Wallpapers
@@ -359,8 +364,12 @@ if [ "$choice" == "y" ]; then
 	mkdir -p $the_user/.config/nitrogen/
 
 	# Define variables
-	CONFIG_FILE="$the_user/.config/nitrogen/bg-saved.cfg"
-	NITROGEN_FILE="$the_user/.config/nitrogen/nitrogen.cfg"
+	CONFIG_DIR="/home/$the_user/.config/nitrogen/"
+	CONFIG_FILE="${CONFIG_DIR}bg-saved.cfg"
+	NITROGEN_FILE="${CONFIG_DIR}nitrogen.cfg"
+
+	# Create Nitrogen Config Directory
+	mkdir -p $CONFIG_DIR
 
 	# Set Background Folder Location
 	echo "[xin_-1]" > $CONFIG_FILE
@@ -434,6 +443,8 @@ if [ "$choice" == "y" ]; then
 
 	# Update Bootloader
 	sudo update-grub
+
+	sudo chown $the_user:$the_user /home/$the_user/debug.txt
 
 	clear
 

@@ -343,7 +343,7 @@ if [ "$choice" == "y" ]; then
 	wget -c https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
 	tar -xf budgie-backgrounds-v1.0.tar.xz
 	sudo mv budgie-backgrounds-1.0/backgrounds /home/$the_user/Pictures/
-	sudo rm /usr/share/backgrounds/meson.build
+	sudo rm /home/$the_user/Pictures/backgrounds/meson.build
 	rm -r budgie-backgrounds-v1.0.tar.xz budgie-backgrounds-1.0
 
 	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND1_4K.png

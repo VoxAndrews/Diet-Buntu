@@ -361,7 +361,7 @@ if [ "$choice" == "y" ]; then
 
 	## Set Background To Default
 	# Create Nitrogen Config Directory
-	mkdir -p $the_user/.config/nitrogen/
+	mkdir -p /home/$the_user/.config/nitrogen/
 
 	# Define variables
 	CONFIG_DIR="/home/$the_user/.config/nitrogen/"
@@ -396,7 +396,7 @@ if [ "$choice" == "y" ]; then
 	chown $the_user:$the_user /home/$the_user/.xsessionrc
 
 	# Check if the .icewm folder exists, if not create it
-	if [ ! -d "/home/the_user/.icewm" ]; then
+	if [ ! -d "/home/$the_user/.icewm" ]; then
     		mkdir -p /home/$the_user/.icewm
     		chown $the_user:$the_user /home/$the_user/.icewm
 	fi

@@ -41,8 +41,8 @@ The script will create a few default folders for you (Pictures, Documents, Video
 `wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Scripts/Diet-Buntu-22.04/x64/IceWM/Diet-Buntu-22.04x64_IceWM.sh`
 
 ## Known Bugs
-- Installing the OS in a Virtual Machine (E.g. VirtualBox or Hyper-V) and playing some games may cause weird mouse behaviour in-game (E.g. The camera in some First-Person games will spin uncontrollably). Not sure if this will carry over onto real hardware at this time.
-- Changing the resolution of the screen with LXRandR will cause the current wallpaper to disappear/revert to the current theme's default.
+- Installing the OS in a Virtual Machine (E.g. VirtualBox or Hyper-V) and playing some games may cause weird mouse behaviour in games (E.g. The camera in some First-Person games will spin uncontrollably). Not sure if this will carry over onto real hardware at this time.
+- Changing the screen's resolution with LXRandR will cause the current wallpaper to disappear/revert to the current theme's default. This can be fixed by going to 'Logout...->Restart Icewm' for now, or by rebooting the system as a last measure. This will only occur when changing the screens resolution
 
 <details>
 <summary><b>Screenshots</b></summary>

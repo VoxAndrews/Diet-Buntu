@@ -128,10 +128,10 @@ if [ "$choice" == "y" ]; then
 	echo "UTILITY SOFTWARE PACKAGE INSTALLATION"
 	echo ""
 	echo "The Utility Software Package includes essential utility software like:"
-	echo "- LibreOffice: A powerful office suite."
+	echo "- FreeOffice: A powerful, Microsoft Office compatible suite."
 	echo "- Claws Mail: An email client."
 	echo "- GNOME Software: Software Center for application management."
-	echo "- LazPaint: A basic image editor program"
+	echo "- Drawing: A basic image editor program"
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
@@ -246,15 +246,15 @@ if [ "$choice" == "y" ]; then
 	echo "Debug: Installing software and libraries from Ubuntu" >> /home/$the_user/debug.txt
 
 	# Install Software and Libraries from Ubuntu
-	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol gvfs-backends gvfs-fuse nitrogen qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer arandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl
+	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm polo-file-manager pulseaudio pavucontrol gvfs-backends gvfs-fuse nitrogen qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl
 
 	# Check the user's choice for the Utility Software Package
 	if [ "$utility_option" == "1" ]; then
-    		sudo apt install -y libreoffice libreoffice-help-en-us claws-mail gnome-software
+    		sudo apt install -y claws-mail gnome-software drawing
 
-		wget -c https://github.com/bgrabitmap/lazpaint/releases/download/v7.2.2/lazpaint7.2.2_linux64.deb
-		echo "yes" | sudo dpkg -i lazpaint7.2.2_linux64.deb
-		sudo rm lazpaint7.2.2_linux64.deb
+		wget -c https://www.softmaker.net/down/softmaker-freeoffice-2021_1064-01_amd64.deb
+		sudo dpkg -i softmaker-freeoffice-2021_1064-01_amd64.deb
+    		sudo rm softmaker-freeoffice-2021_1064-01_amd64.deb
 	fi
 
 	# Check the user's choice for the Entertainment Package
@@ -359,6 +359,11 @@ if [ "$choice" == "y" ]; then
 	sudo mv diet-buntu_BACKGROUND2_4K.png /usr/share/backgrounds/
 	sudo mv diet-buntu_BACKGROUND3_4K.png /usr/share/backgrounds/
 
+	# Fix permissions for .config directory
+	echo "Debug: Fixing permissions for .config directory" >> /home/$the_user/debug.txt
+	sudo chown -R $the_user:$the_user /home/$the_user/.config
+	chmod 755 /home/$the_user/.config
+
 	## Set Background To Default
 	# Create Nitrogen Config Directory
 	mkdir -p /home/$the_user/.config/nitrogen/
@@ -391,7 +396,7 @@ if [ "$choice" == "y" ]; then
 	echo "icon_caps=false" >> $NITROGEN_FILE
 	echo "dirs=/usr/share/backgrounds;" >> $NITROGEN_FILE
 
-	# Apply Wallpaper On Reboot/IceWM Restart
+	# Apply Wallpaper On Reboot
 	echo "nitrogen --restore &" >> /home/$the_user/.xsessionrc
 	chown $the_user:$the_user /home/$the_user/.xsessionrc
 
@@ -399,37 +404,33 @@ if [ "$choice" == "y" ]; then
 	if [ ! -d "/home/$the_user/.icewm" ]; then
     		mkdir -p /home/$the_user/.icewm
     		chown $the_user:$the_user /home/$the_user/.icewm
+	else
+    		# If the folder already exists, just change its ownership
+    		chown $the_user:$the_user /home/$the_user/.icewm
 	fi
 
 	# Overwrite the preferences file in the user's .icewm folder with the one from /usr/share/icewm/
 	cp /usr/share/icewm/preferences /home/$the_user/.icewm/preferences
 	chown $the_user:$the_user /home/$the_user/.icewm/preferences
 
+	# Apply Wallpaper When Restarting IceWM
+	touch /home/$the_user/.icewm/startup
+	chmod +x /home/$the_user/.icewm/startup
+	echo "icesh guievents | awk '/startup|restart/ { system(\"nitrogen --restore &\") }'" > /home/$the_user/.icewm/startup
+
+	# Navigate back to the user's home directory
+	cd /home/$the_user
+
 	# Append the lines to the preferences file, using the value of $theme_option
 	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$the_user/.icewm/preferences
 
-	# Create a hidden Scripts directory
-	mkdir -p /home/$the_user/.scripts
-
-	# Create a script which sets the resolution on startup
-	echo "#!/bin/bash" > /home/$the_user/.scripts/arandr_startup.sh
-
-	# Modify arandr script to delete itself if arandr is not present
-	echo "if ! command -v arandr &> /dev/null; then" >> /home/$the_user/.scripts/arandr_startup.sh
-	echo "  rm -- \"$0\"" >> /home/$the_user/.scripts/arandr_startup.sh
-	echo "  exit 1" >> /home/$the_user/.scripts/arandr_startup.sh
-	echo "fi" >> /home/$the_user/.scripts/arandr_startup.sh
-
-	# Check if the arandr settings file exists, and if so, run it
-	echo "if [ -f ~/.screenlayout/default.sh ]; then" >> /home/$the_user/.scripts/arandr_startup.sh
-	echo "  bash ~/.screenlayout/default.sh" >> /home/$the_user/.scripts/arandr_startup.sh
-	echo "fi" >> /home/$the_user/.scripts/arandr_startup.sh
-
-	# Make the script executable
-	chmod +x /home/$the_user/.scripts/arandr_startup.sh
-
-	# Add the script to .xsessionrc so it runs at startup
-	echo "/home/$the_user/.scripts/arandr_startup.sh &" >> /home/$the_user/.xsessionrc
+	# Apply Resolution on Reboot/IceWM Restart
+	echo "" >> /home/$the_user/.xsessionrc
+	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> /home/$the_user/.xsessionrc
+	echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> /home/$the_user/.xsessionrc
+	echo "" >> /home/$the_user/.xsessionrc
+	echo "# Execute the extracted command" >> /home/$the_user/.xsessionrc
+	echo "eval \$xrandr_command" >> /home/$the_user/.xsessionrc
 
 	echo "Debug: Enabling printer service (CUPS)" >> /home/$the_user/debug.txt
 

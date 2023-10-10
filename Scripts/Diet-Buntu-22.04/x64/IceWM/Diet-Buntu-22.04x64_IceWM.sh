@@ -470,7 +470,7 @@ if [ "$choice" == "y" ]; then
     			update_icons
   		fi
 	done
-	EOF
+EOF
 
 	# Set permissions
 	chmod +x "/home/$the_user/.scripts/desktop_icon_scan.sh"

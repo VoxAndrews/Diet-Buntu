@@ -4,9 +4,17 @@ set -e
 
 # Determine the user who will own the files/directories
 if [ -n "$SUDO_USER" ]; then
-    the_user=$SUDO_USER
+   	the_user=$SUDO_USER
 else
-    the_user=$USER
+    	the_user=$USER
+fi
+
+if [ -z "$the_user" ] || [[ ! "$the_user" =~ ^[a-zA-Z0-9_-.]+$ ]] || ! id "$the_user" &>/dev/null || [ ! -d "/home/$the_user" ]; then
+	clear
+
+	echo "ERROR: Invalid or non-existent user. Exiting installation...\n"
+
+    	exit 1
 fi
 
 echo "Debug: Installing IP Utilities" >> /home/$the_user/debug.txt

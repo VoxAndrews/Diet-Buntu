@@ -354,13 +354,6 @@ if [ "$choice" == "y" ]; then
 	sudo mv diet-buntu_BACKGROUND2_4K.png /home/$the_user/Pictures/backgrounds/
 	sudo mv diet-buntu_BACKGROUND3_4K.png /home/$the_user/Pictures/backgrounds/
 
-	# Create the directory if it doesn't exist
-	mkdir -p /home/$the_user/.config/pcmanfm/default
-
-	# Create the pcmanfm.conf file with the necessary settings
-	echo -e "[desktop]\nwallpaper_mode=fit\nwallpaper=/home/$the_user/Pictures/backgrounds/diet-buntu_BACKGROUND2_4K.png" > /home/$the_user/.config/pcmanfm/default/pcmanfm.conf
-
-
 	# Check if the .icewm folder exists, if not create it
 	if [ ! -d "/home/$the_user/.icewm" ]; then
     		mkdir -p /home/$the_user/.icewm
@@ -377,6 +370,8 @@ if [ "$choice" == "y" ]; then
 	# Create IceWM Startup File
 	touch /home/$the_user/.icewm/startup
 	chmod +x /home/$the_user/.icewm/startup
+
+	echo "pcmanfm --desktop &" >> /home/$the_user/.icewm/startup
 
 	# Navigate back to the user's home directory
 	cd /home/$the_user
@@ -438,42 +433,41 @@ if [ "$choice" == "y" ]; then
 
 	# Create the desktop_icon_scan.sh script
 	cat << 'EOF' > "/home/$the_user/.scripts/desktop_icon_scan.sh"
-	#!/bin/bash
+#!/bin/bash
 
-	# Define the desktop directory and applications directory
-	desktop_dir="\$HOME/Desktop"
-	applications_dir="/usr/share/applications"
+# Define the desktop directory and applications directory
+desktop_dir="$HOME/Desktop"
+applications_dir="/usr/share/applications"
 
-	# List of files to exclude
-	exclude=("snapd-user-session-agent.desktop" "snap-handler.desktop" "gnome-mimeapps.list" "additional-drivers.desktop" "defaults.list" "mimeinfo.cache")
+# List of files to exclude
+exclude=("snapd-user-session-agent.desktop" "snap-handler.desktop" "gnome-mimeapps.list" "additional-drivers.desktop" "defaults.list" "mimeinfo.cache" "gcr-prompter.desktop" "software-properties-drivers.desktop" "snap-handle-link.desktop" "openjdk-11-java.desktop" "python3.10.desktop" "io.snapcraft.SessionAgent.desktop" "gnome-software-local-file.desktop" "gcr-viewer.desktop")
 
-	# Function to update desktop icons
-	update_icons() {
-  		# Remove all symbolic links from the desktop directory
-  		find "\$desktop_dir" -type l -exec rm {} \\;
+# Function to update desktop icons
+update_icons() {
+  	# Remove all symbolic links from the desktop directory
+	find "$desktop_dir" -type l -exec rm {} \;
 
-  		# Create new symbolic links
-  		for app in "\$applications_dir"/*.desktop; do
-    			# Extract the filename from the path
-    			filename=\$(basename "\$app")
+  	# Create new symbolic links
+  	for app in "$applications_dir"/*.desktop; do
+    		# Extract the filename from the path
+    		filename=$(basename "$app")
     
-   			# Check if the file is in the exclude list
-    			if [[ ! " \${exclude[@]} " =~ " \${filename} " ]]; then
-      				ln -s "\$app" "\$desktop_dir"
-    			fi
-  		done
-	}
+   		# Check if the file is in the exclude list
+    		if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
+      			ln -s "$app" "$desktop_dir"
+    		fi
+  	done
+}
 
-	# Initial update
-	update_icons
+# Initial update
+update_icons
 
-	# Monitor the applications directory for changes
-	inotifywait -m -e create,delete "\$applications_dir" | while read -r directory events filename; do
-  		# Update icons if a .desktop file is added or removed
-  		if [[ "\$filename" == *.desktop ]]; then
-    			update_icons
-  		fi
-	done
+# Monitor the applications directory for changes
+inotifywait -m -e create,delete,modify,moved_to,moved_from "$applications_dir" | while read -r directory events filename; do
+    	if [[ "$filename" == *.desktop ]]; then
+        	update_icons
+    	fi
+done
 EOF
 
 	# Set permissions

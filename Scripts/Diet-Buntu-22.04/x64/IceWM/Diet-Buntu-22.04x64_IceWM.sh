@@ -408,13 +408,28 @@ if [ "$choice" == "y" ]; then
 	# Append the lines to the preferences file, using the value of $theme_option
 	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$the_user/.icewm/preferences
 
-	# Apply Resolution on Reboot/IceWM Restart
-	echo "" >> /home/$the_user/.xsessionrc
-	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> /home/$the_user/.xsessionrc
-	echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> /home/$the_user/.xsessionrc
-	echo "" >> /home/$the_user/.xsessionrc
-	echo "# Execute the extracted command" >> /home/$the_user/.xsessionrc
-	echo "eval \$xrandr_command" >> /home/$the_user/.xsessionrc
+	# Create a hidden Scripts directory
+	mkdir -p /home/$the_user/.scripts
+
+	# Create a script which sets the resolution on startup
+	echo "#!/bin/bash" > /home/$the_user/.scripts/arandr_startup.sh
+
+	# Modify arandr script to delete itself if arandr is not present
+	echo "if ! command -v arandr &> /dev/null; then" >> /home/$the_user/.scripts/arandr_startup.sh
+	echo "  rm -- \"$0\"" >> /home/$the_user/.scripts/arandr_startup.sh
+	echo "  exit 1" >> /home/$the_user/.scripts/arandr_startup.sh
+	echo "fi" >> /home/$the_user/.scripts/arandr_startup.sh
+
+	# Check if the arandr settings file exists, and if so, run it
+	echo "if [ -f ~/.screenlayout/default.sh ]; then" >> /home/$the_user/.scripts/arandr_startup.sh
+	echo "  bash ~/.screenlayout/default.sh" >> /home/$the_user/.scripts/arandr_startup.sh
+	echo "fi" >> /home/$the_user/.scripts/arandr_startup.sh
+
+	# Make the script executable
+	chmod +x /home/$the_user/.scripts/arandr_startup.sh
+
+	# Add the script to .xsessionrc so it runs at startup
+	echo "/home/$the_user/.scripts/arandr_startup.sh &" >> /home/$the_user/.xsessionrc
 
 	echo "Debug: Enabling printer service (CUPS)" >> /home/$the_user/debug.txt
 

@@ -354,8 +354,12 @@ if [ "$choice" == "y" ]; then
 	sudo mv diet-buntu_BACKGROUND2_4K.png /home/$the_user/Pictures/backgrounds/
 	sudo mv diet-buntu_BACKGROUND3_4K.png /home/$the_user/Pictures/backgrounds/
 
-	# Set default wallpaper
-	pcmanfm --set-wallpaper="/home/$the_user/Pictures/backgrounds/diet-buntu_BACKGROUND2_4K.png"
+	# Create the directory if it doesn't exist
+	mkdir -p /home/$the_user/.config/pcmanfm/default
+
+	# Create the pcmanfm.conf file with the necessary settings
+	echo -e "[desktop]\nwallpaper_mode=fit\nwallpaper=/home/$the_user/Pictures/backgrounds/diet-buntu_BACKGROUND2_4K.png" > /home/$the_user/.config/pcmanfm/default/pcmanfm.conf
+
 
 	# Check if the .icewm folder exists, if not create it
 	if [ ! -d "/home/$the_user/.icewm" ]; then

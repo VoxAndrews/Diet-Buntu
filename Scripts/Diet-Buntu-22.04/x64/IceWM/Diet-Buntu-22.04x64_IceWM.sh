@@ -379,6 +379,12 @@ if [ "$choice" == "y" ]; then
 	# Append the lines to the preferences file, using the value of $theme_option
 	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$the_user/.icewm/preferences
 
+	# Create the .config directory if it doesn't exist
+	if [ ! -d "/home/$the_user/.config" ]; then
+  		mkdir -p "/home/$the_user/.config"
+  		echo "Debug: Created .config directory" >> /home/$the_user/debug.txt
+	fi
+
 	# Apply Resolution on Reboot/IceWM Restart
 	echo "" >> /home/$the_user/.xsessionrc
 	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> /home/$the_user/.xsessionrc

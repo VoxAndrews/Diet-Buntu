@@ -379,15 +379,17 @@ if [ "$choice" == "y" ]; then
 	echo "nitrogen --restore &" >> ~/.xsessionrc
 
 	# Check if the .icewm folder exists, if not create it
-	if [ ! -d "$HOME/.icewm" ]; then
-    		mkdir -p $HOME/.icewm
+	if [ ! -d "/home/$SUDO_USER/.icewm" ]; then
+    		mkdir -p /home/$SUDO_USER/.icewm
+    		chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.icewm
 	fi
 
 	# Overwrite the preferences file in the user's .icewm folder with the one from /usr/share/icewm/
-	cp /usr/share/icewm/preferences $HOME/.icewm/preferences
+	cp /usr/share/icewm/preferences /home/$SUDO_USER/.icewm/preferences
+	chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.icewm/preferences
 
 	# Append the lines to the preferences file, using the value of $theme_option
-	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> $HOME/.icewm/preferences
+	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$SUDO_USER/.icewm/preferences
 
 	# Apply Resolution on Reboot/IceWM Restart
 	echo "" >> ~/.xsessionrc

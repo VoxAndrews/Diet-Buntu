@@ -378,8 +378,16 @@ if [ "$choice" == "y" ]; then
 	# Apply Wallpaper On Reboot/IceWM Restart
 	echo "nitrogen --restore &" >> ~/.xsessionrc
 
-	# After installing IceWM and the IcePick theme, apply the option to the user's account
-	echo "ShowThemesMenu=$theme_option" > ~/.icewm/prefoverride
+	# Check if the .icewm folder exists, if not create it
+	if [ ! -d "$HOME/.icewm" ]; then
+    		mkdir -p $HOME/.icewm
+	fi
+
+	# Overwrite the preferences file in the user's .icewm folder with the one from /usr/share/icewm/
+	cp /usr/share/icewm/preferences $HOME/.icewm/preferences
+
+	# Append the lines to the preferences file, using the value of $theme_option
+	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> $HOME/.icewm/preferences
 
 	# Apply Resolution on Reboot/IceWM Restart
 	echo "" >> ~/.xsessionrc

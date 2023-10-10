@@ -359,11 +359,6 @@ if [ "$choice" == "y" ]; then
 	sudo mv diet-buntu_BACKGROUND2_4K.png /usr/share/backgrounds/
 	sudo mv diet-buntu_BACKGROUND3_4K.png /usr/share/backgrounds/
 
-	# Fix permissions for .config directory
-	echo "Debug: Fixing permissions for .config directory" >> /home/$the_user/debug.txt
-	sudo chown -R $the_user:$the_user /home/$the_user/.config
-	chmod 755 /home/$the_user/.config
-
 	## Set Background To Default
 	# Create Nitrogen Config Directory
 	mkdir -p /home/$the_user/.config/nitrogen/
@@ -431,6 +426,11 @@ if [ "$choice" == "y" ]; then
 	echo "" >> /home/$the_user/.xsessionrc
 	echo "# Execute the extracted command" >> /home/$the_user/.xsessionrc
 	echo "eval \$xrandr_command" >> /home/$the_user/.xsessionrc
+
+	# Fix permissions for .config directory
+	echo "Debug: Fixing permissions for .config directory" >> /home/$the_user/debug.txt
+	sudo chown -R $the_user:$the_user /home/$the_user/.config
+	chmod 755 /home/$the_user/.config
 
 	echo "Debug: Enabling printer service (CUPS)" >> /home/$the_user/debug.txt
 

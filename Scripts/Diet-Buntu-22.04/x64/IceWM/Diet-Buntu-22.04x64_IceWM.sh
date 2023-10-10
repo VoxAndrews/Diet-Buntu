@@ -356,11 +356,11 @@ if [ "$choice" == "y" ]; then
 
 	## Set Background To Default
 	# Create Nitrogen Config Directory
-	mkdir -p $HOME/.config/nitrogen/
+	mkdir -p $the_user/.config/nitrogen/
 
 	# Define variables
-	CONFIG_FILE="$HOME/.config/nitrogen/bg-saved.cfg"
-	NITROGEN_FILE="$HOME/.config/nitrogen/nitrogen.cfg"
+	CONFIG_FILE="$the_user/.config/nitrogen/bg-saved.cfg"
+	NITROGEN_FILE="$the_user/.config/nitrogen/nitrogen.cfg"
 
 	# Set Background Folder Location
 	echo "[xin_-1]" > $CONFIG_FILE

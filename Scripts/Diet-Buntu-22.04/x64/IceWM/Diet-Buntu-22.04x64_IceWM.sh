@@ -454,19 +454,33 @@ exclude=("snapd-user-session-agent.desktop" "snap-handler.desktop" "gnome-mimeap
 
 # Function to update desktop icons
 update_icons() {
-  	# Remove all symbolic links from the desktop directory
-	find "$desktop_dir" -type l -exec rm {} \;
+    	# Loop through each .desktop file in the applications directory
+    	for app in "$applications_dir"/*.desktop; do
+        	# Extract the filename from the path
+        	filename=$(basename "$app")
 
-  	# Create new symbolic links
-  	for app in "$applications_dir"/*.desktop; do
-    		# Extract the filename from the path
-    		filename=$(basename "$app")
-    
-   		# Check if the file is in the exclude list
-    		if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
-      			ln -s "$app" "$desktop_dir"
-    		fi
-  	done
+        	# Check if the file is in the exclude list
+        	if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
+
+            		# Check if a symbolic link already exists
+            		if [ ! -L "$desktop_dir/$filename" ]; then
+
+                		# Add Terminal=false if it doesn't exist or is set to true
+                		if ! grep -q "Terminal=false" "$app"; then
+                    			sed -i '/Terminal=true/d' "$app"
+                    			echo "Terminal=false" >> "$app"
+                		fi
+
+                		# Create a new symbolic link
+                		ln -s "$app" "$desktop_dir"
+            		fi
+        	else
+            		# Remove the symbolic link if it exists
+            		if [ -L "$desktop_dir/$filename" ]; then
+                		rm "$desktop_dir/$filename"
+            		fi
+        	fi
+	done
 }
 
 # Initial update

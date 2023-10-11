@@ -516,7 +516,7 @@ EOF
 	rm -rf papirus-icon-theme
 
 	# File to be edited or created
-	file=/home/$the_user/.gtkrc-2.0.mine
+	file=/home/$the_user/.gtkrc-2.0
 
 	# Check if the file exists
 	if [ -f "$file" ]; then

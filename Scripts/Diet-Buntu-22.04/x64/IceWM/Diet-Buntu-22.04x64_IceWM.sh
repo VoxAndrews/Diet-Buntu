@@ -450,37 +450,29 @@ desktop_dir="$HOME/Desktop"
 applications_dir="/usr/share/applications"
 
 # List of files to exclude
-exclude=("snapd-user-session-agent.desktop" "snap-handler.desktop" "gnome-mimeapps.list" "additional-drivers.desktop" "defaults.list" "mimeinfo.cache" "gcr-prompter.desktop" "software-properties-drivers.desktop" "snap-handle-link.desktop" "openjdk-11-java.desktop" "python3.10.desktop" "io.snapcraft.SessionAgent.desktop" "gnome-software-local-file.desktop" "gcr-viewer.desktop")
+exclude=("snapd-user-session-agent.desktop", "snap-handler.desktop", "gnome-mimeapps.list", "additional-drivers.desktop", "defaults.list", "mimeinfo.cache", "gcr-prompter.desktop", "software-properties-drivers.desktop", "snap-handle-link.desktop", "openjdk-11-java.desktop", "python3.10.desktop", "io.snapcraft.SessionAgent.desktop", "gnome-software-local-file.desktop", "gcr-viewer.desktop")
 
 # Function to update desktop icons
 update_icons() {
-    	# Loop through each .desktop file in the applications directory
-    	for app in "$applications_dir"/*.desktop; do
-        	# Extract the filename from the path
-        	filename=$(basename "$app")
+    # Loop through each .desktop file in the applications directory
+    for app in "$applications_dir"/*.desktop; do
+        # Extract the filename from the path
+        filename=$(basename "$app")
 
-        	# Check if the file is in the exclude list
-        	if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
-
-            		# Check if a symbolic link already exists
-            		if [ ! -L "$desktop_dir/$filename" ]; then
-
-                		# Add Terminal=false if it doesn't exist or is set to true
-                		if ! grep -q "Terminal=false" "$app"; then
-                    			sed -i '/Terminal=true/d' "$app"
-                    			echo "Terminal=false" >> "$app"
-                		fi
-
-                		# Create a new symbolic link
-                		ln -s "$app" "$desktop_dir"
-            		fi
-        	else
-            		# Remove the symbolic link if it exists
-            		if [ -L "$desktop_dir/$filename" ]; then
-                		rm "$desktop_dir/$filename"
-            		fi
-        	fi
-	done
+        # Check if the file is in the exclude list
+        if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
+            # Check if a symbolic link already exists
+            if [ ! -L "$desktop_dir/$filename" ]; then
+                # Create a new symbolic link
+                ln -s "$app" "$desktop_dir"
+            fi
+        else
+            # Remove the symbolic link if it exists
+            if [ -L "$desktop_dir/$filename" ]; then
+                rm "$desktop_dir/$filename"
+            fi
+        fi
+    done
 }
 
 # Initial update
@@ -488,11 +480,20 @@ update_icons
 
 # Monitor the applications directory for changes
 inotifywait -m -e create,delete,modify,moved_to,moved_from "$applications_dir" | while read -r directory events filename; do
-    	if [[ "$filename" == *.desktop ]]; then
-        	update_icons
-    	fi
+    if [[ "$filename" == *.desktop ]]; then
+        update_icons
+    fi
 done
 EOF
+
+	# Check if quick_exec exists in the file
+	if grep -q "quick_exec" /home/$the_user/.config/libfm/libfm.conf; then
+  		# If it exists, update it
+  		sed -i 's/quick_exec=0/quick_exec=1/g' /home/$the_user/.config/libfm/libfm.conf
+	else
+  		# If it doesn't exist, add it
+  		echo "quick_exec=1" >> /home/$the_user/.config/libfm/libfm.conf
+	fi
 
 	# Set permissions
 	chmod +x "/home/$the_user/.scripts/desktop_icon_scan.sh"

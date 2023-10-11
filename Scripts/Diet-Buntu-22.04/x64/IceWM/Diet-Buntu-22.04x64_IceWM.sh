@@ -241,7 +241,7 @@ if [ "$choice" == "y" ]; then
 	echo "Debug: Installing software and libraries from Ubuntu" >> /home/$the_user/debug.txt
 
 	# Install Software and Libraries from Ubuntu
-	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi
+	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance
 
 	# Check the user's choice for the Utility Software Package
 	if [ "$utility_option" == "1" ]; then
@@ -487,6 +487,34 @@ EOF
 
 	# Add to startup
 	echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >> /home/$the_user/.icewm/startup
+
+	echo "Debug: Setting Up Theming For Desktop" >> /home/$the_user/debug.txt
+
+	# Install the Papirus icon theme
+	cd ~
+	git clone https://github.com/PapirusDevelopmentTeam/papirus-icon-theme.git
+	cd papirus-icon-theme
+	sudo ./install.sh
+
+	# Go back to the home directory and remove the cloned folder
+	cd ~
+	rm -rf papirus-icon-theme
+
+	# File to be edited or created
+	file=/home/$the_user/.gtkrc-2.0.mine
+
+	# Check if the file exists
+	if [ -f "$file" ]; then
+    		# Check for existing lines and edit them, or append if they don't exist
+    		grep -q "gtk-icon-theme-name=" $file && sed -i 's/gtk-icon-theme-name=.*/gtk-icon-theme-name="Papirus-Dark"/' $file || echo 'gtk-icon-theme-name="Papirus-Dark"' >> $file
+    		grep -q "gtk-theme-name=" $file && sed -i 's/gtk-theme-name=.*/gtk-theme-name="Industrial"/' $file || echo 'gtk-theme-name="Industrial"' >> $file
+	else
+    		# Create the file and add the lines
+    		touch $file
+    		echo "# Custom GTK 2.0 settings" >> $file
+    		echo 'gtk-icon-theme-name="Papirus-Dark"' >> $file
+    		echo 'gtk-theme-name="Industrial"' >> $file
+	fi
 
 	clear
 

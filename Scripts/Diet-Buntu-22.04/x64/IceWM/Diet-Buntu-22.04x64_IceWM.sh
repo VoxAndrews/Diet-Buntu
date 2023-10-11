@@ -450,29 +450,23 @@ desktop_dir="$HOME/Desktop"
 applications_dir="/usr/share/applications"
 
 # List of files to exclude
-exclude=("snapd-user-session-agent.desktop", "snap-handler.desktop", "gnome-mimeapps.list", "additional-drivers.desktop", "defaults.list", "mimeinfo.cache", "gcr-prompter.desktop", "software-properties-drivers.desktop", "snap-handle-link.desktop", "openjdk-11-java.desktop", "python3.10.desktop", "io.snapcraft.SessionAgent.desktop", "gnome-software-local-file.desktop", "gcr-viewer.desktop")
+exclude=("snapd-user-session-agent.desktop" "snap-handler.desktop" "gnome-mimeapps.list" "additional-drivers.desktop" "defaults.list" "mimeinfo.cache" "gcr-prompter.desktop" "software-properties-drivers.desktop" "snap-handle-link.desktop" "openjdk-11-java.desktop" "python3.10.desktop" "io.snapcraft.SessionAgent.desktop" "gnome-software-local-file.desktop" "gcr-viewer.desktop")
 
 # Function to update desktop icons
 update_icons() {
-    # Loop through each .desktop file in the applications directory
-    for app in "$applications_dir"/*.desktop; do
-        # Extract the filename from the path
-        filename=$(basename "$app")
+	# Remove all symbolic links from the desktop directory
+	find "$desktop_dir" -type l -exec rm {} \;
 
-        # Check if the file is in the exclude list
-        if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
-            # Check if a symbolic link already exists
-            if [ ! -L "$desktop_dir/$filename" ]; then
-                # Create a new symbolic link
-                ln -s "$app" "$desktop_dir"
-            fi
-        else
-            # Remove the symbolic link if it exists
-            if [ -L "$desktop_dir/$filename" ]; then
-                rm "$desktop_dir/$filename"
-            fi
-        fi
-    done
+  	# Create new symbolic links
+  	for app in "$applications_dir"/*.desktop; do
+    		# Extract the filename from the path
+    		filename=$(basename "$app")
+    
+   		# Check if the file is in the exclude list
+    		if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
+      			ln -s "$app" "$desktop_dir"
+    		fi
+  	done
 }
 
 # Initial update

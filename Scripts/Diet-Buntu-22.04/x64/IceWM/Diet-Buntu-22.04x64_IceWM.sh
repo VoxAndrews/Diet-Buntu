@@ -486,15 +486,6 @@ inotifywait -m -e create,delete,modify,moved_to,moved_from "$applications_dir" |
 done
 EOF
 
-	# Check if quick_exec exists in the file
-	if grep -q "quick_exec" /home/$the_user/.config/libfm/libfm.conf; then
-  		# If it exists, update it
-  		sed -i 's/quick_exec=0/quick_exec=1/g' /home/$the_user/.config/libfm/libfm.conf
-	else
-  		# If it doesn't exist, add it
-  		echo "quick_exec=1" >> /home/$the_user/.config/libfm/libfm.conf
-	fi
-
 	# Set permissions
 	chmod +x "/home/$the_user/.scripts/desktop_icon_scan.sh"
 	chown $the_user:$the_user "/home/$the_user/.scripts"

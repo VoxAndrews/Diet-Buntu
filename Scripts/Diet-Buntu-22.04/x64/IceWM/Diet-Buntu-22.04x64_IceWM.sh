@@ -377,6 +377,53 @@ if [ "$choice" == "y" ]; then
 
 	echo "pcmanfm --desktop &" >> /home/$the_user/.icewm/startup
 
+	# Set program icon files to automatically execute with PCManFM
+	# Define the path to the libfm configuration file
+	CONFIG_FILE="$HOME/.config/libfm/libfm.conf"
+
+	# Check if the configuration file exists
+	if [ -f "$CONFIG_FILE" ]; then
+    		# Check if 'quick_exec' exists and is set to '0'
+    		if grep -q "^quick_exec=0" "$CONFIG_FILE"; then
+			echo "Debug: quick_exec found, setting to 1" >> /home/$the_user/debug.txt
+
+        		sed -i 's/^quick_exec=0/quick_exec=1/' "$CONFIG_FILE"
+
+			echo "Debug: quick_exec set to 1" >> /home/$the_user/debug.txt
+    		elif grep -q "^quick_exec=" "$CONFIG_FILE"; then
+        		echo "Debug: quick_exec found, already set to 1" >> /home/$the_user/debug.txt
+    		else
+        		echo "Debug: quick_exec doesn't exist, creating and setting to 1" >> /home/$the_user/debug.txt
+		
+        		echo "quick_exec=1" >> "$CONFIG_FILE"
+
+			echo "Debug: quick_exec created and set to 1" >> /home/$the_user/debug.txt
+    		fi
+	else
+		echo "Debug: Configuration file not found: $CONFIG_FILE" >> /home/$the_user/debug.txt
+	fi
+
+	# Set wallpaper and wallpaper mode with PCManFM
+	# Define the path to the desktop configuration file
+	DESKTOP_CONFIG_FILE="$HOME/.config/pcmanfm/default/desktop-items-0.conf"
+
+	# Check if the configuration file exists
+	if [ -f "$DESKTOP_CONFIG_FILE" ]; then
+		echo "Debug: Updating the wallpaper mode to fit" >> /home/$the_user/debug.txt
+
+    		sed -i 's/^wallpaper_mode=.*/wallpaper_mode=fit/' "$DESKTOP_CONFIG_FILE"
+
+		echo "Debug: Set Wallpaper Mode to fit" >> /home/$the_user/debug.txt
+
+		echo "Debug: Set Wallpaper" >> /home/$the_user/debug.txt
+
+    		sed -i "s|^wallpaper=.*|wallpaper=$HOME/Pictures/backgrounds/waves-midnight.jpg|" "$DESKTOP_CONFIG_FILE"
+
+    		echo "Debug: Wallpaper set successfully" >> /home/$the_user/debug.txt
+	else
+    		echo "Debug: Desktop configuration file not found: $DESKTOP_CONFIG_FILE" >> /home/$the_user/debug.txt
+	fi
+
 	# Navigate back to the user's home directory
 	cd /home/$the_user
 

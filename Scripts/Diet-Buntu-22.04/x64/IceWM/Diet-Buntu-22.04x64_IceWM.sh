@@ -361,10 +361,16 @@ if [ "$choice" == "y" ]; then
 	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND1_4K.png
 	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND2_4K.png
 	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND3_4K.png
+	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND4_4K.png
+	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND5_4K.png
+	wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Backgrounds/4K/PNG/diet-buntu_BACKGROUND6_4K.png
 
 	sudo mv diet-buntu_BACKGROUND1_4K.png /home/$the_user/Pictures/backgrounds/
 	sudo mv diet-buntu_BACKGROUND2_4K.png /home/$the_user/Pictures/backgrounds/
 	sudo mv diet-buntu_BACKGROUND3_4K.png /home/$the_user/Pictures/backgrounds/
+	sudo mv diet-buntu_BACKGROUND4_4K.png /home/$the_user/Pictures/backgrounds/
+	sudo mv diet-buntu_BACKGROUND5_4K.png /home/$the_user/Pictures/backgrounds/
+	sudo mv diet-buntu_BACKGROUND6_4K.png /home/$the_user/Pictures/backgrounds/
 
 	# Check if the .icewm folder exists, if not create it
 	if [ ! -d "/home/$the_user/.icewm" ]; then
@@ -422,7 +428,7 @@ if [ "$choice" == "y" ]; then
 
 		echo "Debug: Set Wallpaper" >>/home/$the_user/debug.txt
 
-		sed -i "s|^wallpaper=.*|wallpaper=$HOME/Pictures/backgrounds/waves-midnight.jpg|" "$DESKTOP_CONFIG_FILE"
+		sed -i "s|^wallpaper=.*|wallpaper=$HOME/Pictures/backgrounds/diet-buntu_BACKGROUND5_4K.png|" "$DESKTOP_CONFIG_FILE"
 
 		echo "Debug: Wallpaper set successfully" >>/home/$the_user/debug.txt
 	else

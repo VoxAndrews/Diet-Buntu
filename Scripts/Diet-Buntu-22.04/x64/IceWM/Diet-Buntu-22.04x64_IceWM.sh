@@ -258,6 +258,7 @@ if [ "$choice" == "y" ]; then
 		wget -c https://www.softmaker.net/down/softmaker-freeoffice-2021_1064-01_amd64.deb
 		sudo dpkg -i softmaker-freeoffice-2021_1064-01_amd64.deb
 		sudo rm softmaker-freeoffice-2021_1064-01_amd64.deb
+		sudo apt-get -f install
 	fi
 
 	# Check the user's choice for the Entertainment Package
@@ -295,15 +296,18 @@ if [ "$choice" == "y" ]; then
 	sudo rm -r os-depends.sh
 
 	wget -c https://github.com/peazip/PeaZip/releases/download/9.3.0/peazip_9.3.0.LINUX.GTK2-1_amd64.deb
-	echo "yes" | sudo dpkg -i peazip_9.3.0.LINUX.GTK2-1_amd64.deb
+	sudo dpkg -i peazip_9.3.0.LINUX.GTK2-1_amd64.deb
 	sudo rm peazip_9.3.0.LINUX.GTK2-1_amd64.deb
+	sudo apt-get -f install
 
 	wget -c https://github.com/dave-theunsub/clamtk/releases/download/v6.16/clamtk_6.16-1_all.deb
-	echo "yes" | sudo dpkg -i clamtk_6.16-1_all.deb
+	sudo dpkg -i clamtk_6.16-1_all.deb
 	sudo rm clamtk_6.16-1_all.deb
+	sudo apt-get -f install
 
 	wget -O "/tmp/min-1.30.0-amd64.deb" "https://github.com/minbrowser/min/releases/download/v1.30.0/min-1.30.0-amd64.deb"
 	sudo dpkg -i /tmp/min-1.30.0-amd64.deb
+	sudo rm /tmp/min-1.30.0-amd64.deb
 	sudo apt-get -f install
 
 	git clone https://github.com/tsujan/FeatherPad.git

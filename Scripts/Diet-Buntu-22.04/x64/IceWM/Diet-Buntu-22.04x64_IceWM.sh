@@ -379,11 +379,8 @@ if [ "$choice" == "y" ]; then
 	cp /usr/share/icewm/preferences /home/$the_user/.icewm/preferences
 	chown $the_user:$the_user /home/$the_user/.icewm/preferences
 
-	# Create IceWM Startup File
-	touch /home/$the_user/.icewm/startup
-	chmod +x /home/$the_user/.icewm/startup
-
-	echo "pcmanfm --desktop &" >>/home/$the_user/.icewm/startup
+	#Add pcmanfm to startup
+	echo "pcmanfm --desktop &" >>/home/$the_user/.xsessionrc
 
 	# Set program icon files to automatically execute with PCManFM
 	# Define the path to the libfm configuration file
@@ -496,44 +493,8 @@ if [ "$choice" == "y" ]; then
 		mkdir "/home/$the_user/.scripts"
 	fi
 
-	# Create the desktop_icon_scan.sh script
-	cat << 'EOF' > "/home/$the_user/.scripts/desktop_icon_scan.sh"
-#!/bin/bash
-
-# Define the desktop directory and applications directory
-desktop_dir="$HOME/Desktop"
-applications_dir="/usr/share/applications"
-
-# List of files to exclude
-exclude=("snapd-user-session-agent.desktop" "snap-handler.desktop" "gnome-mimeapps.list" "additional-drivers.desktop" "defaults.list" "mimeinfo.cache" "gcr-prompter.desktop" "software-properties-drivers.desktop" "snap-handle-link.desktop" "openjdk-11-java.desktop" "python3.10.desktop" "io.snapcraft.SessionAgent.desktop" "gnome-software-local-file.desktop" "gcr-viewer.desktop")
-
-# Function to update desktop icons
-update_icons() {
-	# Remove all symbolic links from the desktop directory
-	find "$desktop_dir" -type l -exec rm {} \;
-
-	# Create new symbolic links
-	for app in "$applications_dir"/*.desktop; do
-		# Extract the filename from the path
-		filename=$(basename "$app")
-
-		# Check if the file is in the exclude list
-		if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
-			ln -s "$app" "$desktop_dir"
-		fi
-	done
-}
-
-# Initial update
-update_icons
-
-# Monitor the applications directory for changes
-inotifywait -m -e create,delete,modify,moved_to,moved_from "$applications_dir" | while read -r directory events filename; do
-	if [[ "$filename" == *.desktop ]]; then
-		update_icons
-	fi
-done
-EOF
+	# Download the desktop_icon_scan.sh script
+	wget -c -P "/home/$the_user/.scripts/" "https://github.com/VoxAndrews/Diet-Buntu/raw/main/Scripts/Utilities/PCManFM/desktop_icon_scan.sh"
 
 	# Set permissions
 	chmod +x "/home/$the_user/.scripts/desktop_icon_scan.sh"
@@ -541,7 +502,7 @@ EOF
 	chown $the_user:$the_user "/home/$the_user/.scripts/desktop_icon_scan.sh"
 
 	# Add to startup
-	echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >>/home/$the_user/.icewm/startup
+	echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >>/home/$the_user/.xsessionrc
 
 	echo "Debug: Setting Up Theming For Desktop" >>/home/$the_user/debug.txt
 
@@ -595,5 +556,4 @@ else
 	echo "Exiting the script..."
 	exit 0
 fi
-
 EOF

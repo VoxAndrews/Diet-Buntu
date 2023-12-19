@@ -302,10 +302,9 @@ if [ "$choice" == "y" ]; then
 	echo "yes" | sudo dpkg -i clamtk_6.16-1_all.deb
 	sudo rm clamtk_6.16-1_all.deb
 
-	echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/home:stevenpusser.list
-	curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_stevenpusser.gpg >/dev/null
-	sudo apt update
-	sudo apt install -y palemoon
+	wget -O "/tmp/min-1.30.0-amd64.deb" "https://github.com/minbrowser/min/releases/download/v1.30.0/min-1.30.0-amd64.deb"
+	sudo dpkg -i /tmp/min-1.30.0-amd64.deb
+	sudo apt-get -f install
 
 	git clone https://github.com/tsujan/FeatherPad.git
 	cd FeatherPad

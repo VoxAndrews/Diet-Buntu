@@ -4,19 +4,19 @@ set -e
 
 # Determine the user who will own the files/directories
 if [ -n "$SUDO_USER" ]; then
-   	the_user=$SUDO_USER
+	the_user=$SUDO_USER
 else
-    	the_user=$USER
+	the_user=$USER
 fi
 
-echo "Debug: Installing IP Utilities" >> /home/$the_user/debug.txt
+echo "Debug: Installing IP Utilities" >>/home/$the_user/debug.txt
 
 # Install IP Utilities Needed for Test
 sudo apt install -y iputils-ping dialog
 
 clear
 
-echo "Debug: Displaying welcome message" >> /home/$the_user/debug.txt
+echo "Debug: Displaying welcome message" >>/home/$the_user/debug.txt
 
 # Display the welcome message
 echo "///////////////////////////////////////////////////////////////////////////"
@@ -56,29 +56,29 @@ choice=""
 
 # Keep prompting the user until they enter Y or N
 while [[ ! "$choice" =~ ^(y|n|Y|N)$ ]]; do
-    read -p "Enter Y to proceed or N to exit: " choice
+	read -p "Enter Y to proceed or N to exit: " choice
 done
 
 # Convert the choice to lowercase to handle both upper and lower case inputs
 choice=$(echo $choice | tr '[:upper:]' '[:lower:]')
 
-echo "Debug: Checking internet connection" >> /home/$the_user/debug.txt
+echo "Debug: Checking internet connection" >>/home/$the_user/debug.txt
 
 # Check the user's choice
 if [ "$choice" == "y" ]; then
 	echo "Proceeding with the script..."
 
 	clear
-    
+
 	check_internet() {
-    		echo "Checking for internet connection..."
-    		ping -c 1 8.8.8.8 > /dev/null 2>&1
-    		if [ $? -ne 0 ]; then
-        		echo "No internet connection detected. Please ensure you're connected to the internet and try again."
-        		exit 1
-    		else
-        		echo "Internet connection detected. Continuing with installer..."
-    		fi
+		echo "Checking for internet connection..."
+		ping -c 1 8.8.8.8 >/dev/null 2>&1
+		if [ $? -ne 0 ]; then
+			echo "No internet connection detected. Please ensure you're connected to the internet and try again."
+			exit 1
+		else
+			echo "Internet connection detected. Continuing with installer..."
+		fi
 	}
 
 	# Call the function
@@ -86,7 +86,7 @@ if [ "$choice" == "y" ]; then
 
 	clear
 
-	echo "Debug: Displaying Themes Menu" >> /home/$the_user/debug.txt
+	echo "Debug: Displaying Themes Menu" >>/home/$the_user/debug.txt
 
 	# Display a warning about theme behavior
 	echo ""
@@ -101,21 +101,23 @@ if [ "$choice" == "y" ]; then
 
 	# Prompt the user for their choice of whether they want to enable or disable theme menu
 	while true; do
-    		read -p "Do you want to enable Themes Menu? (Y/N): " yn
-    		case $yn in
-        		[Yy]* ) 
-            			theme_option=1; 
-            			break;;
-        		[Nn]* ) 
-            			theme_option=0; 
-            			break;;
-        		* ) echo "Please answer Y or N.";;
-    		esac
+		read -p "Do you want to enable Themes Menu? (Y/N): " yn
+		case $yn in
+			[Yy]*)
+				theme_option=1
+				break
+				;;
+			[Nn]*)
+				theme_option=0
+				break
+				;;
+			*) echo "Please answer Y or N." ;;
+		esac
 	done
-	
+
 	clear
 
-	echo "Debug: Displaying Utility Software Package message" >> /home/$the_user/debug.txt
+	echo "Debug: Displaying Utility Software Package message" >>/home/$the_user/debug.txt
 
 	# Display a message about the 'Utility Software Package'
 	echo ""
@@ -132,21 +134,23 @@ if [ "$choice" == "y" ]; then
 
 	# Prompt the user for their choice
 	while true; do
-    		read -p "Do you want to install the Utility Software Package? (Y/N): " yn
-    		case $yn in
-        		[Yy]* ) 
-            			utility_option=1; 
-            			break;;
-        		[Nn]* ) 
-            			utility_option=0; 
-            			break;;
-        		* ) echo "Please answer Y or N.";;
-    		esac
+		read -p "Do you want to install the Utility Software Package? (Y/N): " yn
+		case $yn in
+			[Yy]*)
+				utility_option=1
+				break
+				;;
+			[Nn]*)
+				utility_option=0
+				break
+				;;
+			*) echo "Please answer Y or N." ;;
+		esac
 	done
 
 	clear
 
-	echo "Debug: Displaying Entertainment Package message" >> /home/$the_user/debug.txt
+	echo "Debug: Displaying Entertainment Package message" >>/home/$the_user/debug.txt
 
 	# Display a message about the 'Entertainment Package'
 	echo ""
@@ -166,21 +170,23 @@ if [ "$choice" == "y" ]; then
 
 	# Prompt the user for their choice of whether they want to enable or disable theme menu
 	while true; do
-    		read -p "Do you want to install the Entertainment Package? (Y/N): " yn
-    		case $yn in
-        		[Yy]* ) 
-            			entertainment_option=1; 
-            			break;;
-        		[Nn]* ) 
-            			entertainment_option=0; 
-            			break;;
-        		* ) echo "Please answer Y or N.";;
-    		esac
+		read -p "Do you want to install the Entertainment Package? (Y/N): " yn
+		case $yn in
+			[Yy]*)
+				entertainment_option=1
+				break
+				;;
+			[Nn]*)
+				entertainment_option=0
+				break
+				;;
+			*) echo "Please answer Y or N." ;;
+		esac
 	done
 
 	clear
 
-	echo "Debug: Displaying ClamAV Background Daemon message" >> /home/$the_user/debug.txt
+	echo "Debug: Displaying ClamAV Background Daemon message" >>/home/$the_user/debug.txt
 
 	# Display a message about enabling or disabling ClamAV Background Daemon
 	echo ""
@@ -194,7 +200,7 @@ if [ "$choice" == "y" ]; then
 	echo "can make it harder to run multiple pieces of software on older systems. You"
 	echo "can decide to disable this background process if you like and use Clamtk"
 	echo "to manually scan your system and keep your databases up to date, and your"
-	echo "resource usage will remain low (E.g. ~1500MB RAM usage with Daemon, ~300MB" 
+	echo "resource usage will remain low (E.g. ~1500MB RAM usage with Daemon, ~300MB"
 	echo "RAM usage without)."
 	echo ""
 	echo "NOTE: If you wish to re-enable it after this, at any time you can open the"
@@ -207,16 +213,18 @@ if [ "$choice" == "y" ]; then
 
 	# Prompt the user for their choice of whether they want to enable or disable theme menu
 	while true; do
-    		read -p "Do you want to disable ClamAV Background Daemon? (Y/N): " yn
-    		case $yn in
-        		[Yy]* ) 
-            			clamav_option=1; 
-            			break;;
-        		[Nn]* ) 
-            			clamav_option=0; 
-            			break;;
-        		* ) echo "Please answer Y or N.";;
-    		esac
+		read -p "Do you want to disable ClamAV Background Daemon? (Y/N): " yn
+		case $yn in
+			[Yy]*)
+				clamav_option=1
+				break
+				;;
+			[Nn]*)
+				clamav_option=0
+				break
+				;;
+			*) echo "Please answer Y or N." ;;
+		esac
 	done
 
 	clear
@@ -227,29 +235,29 @@ if [ "$choice" == "y" ]; then
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo ""
 
-	echo "Debug: Adding repositories" >> /home/$the_user/debug.txt
+	echo "Debug: Adding repositories" >>/home/$the_user/debug.txt
 
 	# Add Repositories
 	sudo add-apt-repository -y ppa:jurplel/qview
 	sudo apt-add-repository -y ppa:teejee2008/ppa
 
-	echo "Debug: Performing initial update and upgrade" >> /home/$the_user/debug.txt
+	echo "Debug: Performing initial update and upgrade" >>/home/$the_user/debug.txt
 
 	# Initial Update and Upgrade
 	sudo apt update -y && sudo apt upgrade -y
 
-	echo "Debug: Installing software and libraries from Ubuntu" >> /home/$the_user/debug.txt
+	echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
 	# Install Software and Libraries from Ubuntu
 	sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance
 
 	# Check the user's choice for the Utility Software Package
 	if [ "$utility_option" == "1" ]; then
-    		sudo apt install -y claws-mail gnome-software drawing
+		sudo apt install -y claws-mail gnome-software drawing
 
 		wget -c https://www.softmaker.net/down/softmaker-freeoffice-2021_1064-01_amd64.deb
 		sudo dpkg -i softmaker-freeoffice-2021_1064-01_amd64.deb
-    		sudo rm softmaker-freeoffice-2021_1064-01_amd64.deb
+		sudo rm softmaker-freeoffice-2021_1064-01_amd64.deb
 	fi
 
 	# Check the user's choice for the Entertainment Package
@@ -259,11 +267,11 @@ if [ "$choice" == "y" ]; then
 
 	# Check the user wants to stop the clamav daemon
 	if [ "$clamav_option" == "1" ]; then
-        	sudo systemctl stop clamav-daemon
+		sudo systemctl stop clamav-daemon
 		sudo systemctl disable clamav-daemon
-    	fi
+	fi
 
-	echo "Debug: Downloading and installing/building software" >> /home/$the_user/debug.txt
+	echo "Debug: Downloading and installing/building software" >>/home/$the_user/debug.txt
 
 	# Download and Install/Build Software
 	git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -295,7 +303,7 @@ if [ "$choice" == "y" ]; then
 	sudo rm clamtk_6.16-1_all.deb
 
 	echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/home:stevenpusser.list
-	curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee 	/etc/apt/trusted.gpg.d/home_stevenpusser.gpg > /dev/null
+	curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_stevenpusser.gpg >/dev/null
 	sudo apt update
 	sudo apt install -y palemoon
 
@@ -329,19 +337,19 @@ if [ "$choice" == "y" ]; then
 	sudo rm -r icewm-theme-icepick-master master.zip
 	mkdir -p /home/$the_user/.icewm
 	sudo chown -R $the_user:$the_user /home/$the_user/.icewm
-	echo "Theme=\"IcePick/default.theme\"" > /home/$the_user/.icewm/theme
+	echo "Theme=\"IcePick/default.theme\"" >/home/$the_user/.icewm/theme
 
-	echo "Debug: Creating default folders" >> /home/$the_user/debug.txt
+	echo "Debug: Creating default folders" >>/home/$the_user/debug.txt
 
 	# Create Default Folders
 	mkdir -p /home/$the_user/Documents /home/$the_user/Pictures /home/$the_user/Downloads /home/$the_user/Music /home/$the_user/Videos /home/$the_user/Desktop
 
 	# Fix permissions (either here or right after each folder is created)
 	for folder in Desktop Documents Downloads Music Pictures Videos; do
-  		sudo chown $the_user:$the_user /home/$the_user/$folder
+		sudo chown $the_user:$the_user /home/$the_user/$folder
 	done
 
-	echo "Debug: Downloading default wallpapers" >> /home/$the_user/debug.txt
+	echo "Debug: Downloading default wallpapers" >>/home/$the_user/debug.txt
 
 	# Download Default Wallpapers
 	wget -c https://github.com/BuddiesOfBudgie/budgie-backgrounds/releases/download/v1.0/budgie-backgrounds-v1.0.tar.xz
@@ -360,11 +368,11 @@ if [ "$choice" == "y" ]; then
 
 	# Check if the .icewm folder exists, if not create it
 	if [ ! -d "/home/$the_user/.icewm" ]; then
-    		mkdir -p /home/$the_user/.icewm
-    		chown $the_user:$the_user /home/$the_user/.icewm
+		mkdir -p /home/$the_user/.icewm
+		chown $the_user:$the_user /home/$the_user/.icewm
 	else
-    		# If the folder already exists, just change its ownership
-    		chown $the_user:$the_user /home/$the_user/.icewm
+		# If the folder already exists, just change its ownership
+		chown $the_user:$the_user /home/$the_user/.icewm
 	fi
 
 	# Overwrite the preferences file in the user's .icewm folder with the one from /usr/share/icewm/
@@ -375,7 +383,7 @@ if [ "$choice" == "y" ]; then
 	touch /home/$the_user/.icewm/startup
 	chmod +x /home/$the_user/.icewm/startup
 
-	echo "pcmanfm --desktop &" >> /home/$the_user/.icewm/startup
+	echo "pcmanfm --desktop &" >>/home/$the_user/.icewm/startup
 
 	# Set program icon files to automatically execute with PCManFM
 	# Define the path to the libfm configuration file
@@ -383,24 +391,24 @@ if [ "$choice" == "y" ]; then
 
 	# Check if the configuration file exists
 	if [ -f "$CONFIG_FILE" ]; then
-    		# Check if 'quick_exec' exists and is set to '0'
-    		if grep -q "^quick_exec=0" "$CONFIG_FILE"; then
-			echo "Debug: quick_exec found, setting to 1" >> /home/$the_user/debug.txt
+		# Check if 'quick_exec' exists and is set to '0'
+		if grep -q "^quick_exec=0" "$CONFIG_FILE"; then
+			echo "Debug: quick_exec found, setting to 1" >>/home/$the_user/debug.txt
 
-        		sed -i 's/^quick_exec=0/quick_exec=1/' "$CONFIG_FILE"
+			sed -i 's/^quick_exec=0/quick_exec=1/' "$CONFIG_FILE"
 
-			echo "Debug: quick_exec set to 1" >> /home/$the_user/debug.txt
-    		elif grep -q "^quick_exec=" "$CONFIG_FILE"; then
-        		echo "Debug: quick_exec found, already set to 1" >> /home/$the_user/debug.txt
-    		else
-        		echo "Debug: quick_exec doesn't exist, creating and setting to 1" >> /home/$the_user/debug.txt
-		
-        		echo "quick_exec=1" >> "$CONFIG_FILE"
+			echo "Debug: quick_exec set to 1" >>/home/$the_user/debug.txt
+		elif grep -q "^quick_exec=" "$CONFIG_FILE"; then
+			echo "Debug: quick_exec found, already set to 1" >>/home/$the_user/debug.txt
+		else
+			echo "Debug: quick_exec doesn't exist, creating and setting to 1" >>/home/$the_user/debug.txt
 
-			echo "Debug: quick_exec created and set to 1" >> /home/$the_user/debug.txt
-    		fi
+			echo "quick_exec=1" >>"$CONFIG_FILE"
+
+			echo "Debug: quick_exec created and set to 1" >>/home/$the_user/debug.txt
+		fi
 	else
-		echo "Debug: Configuration file not found: $CONFIG_FILE" >> /home/$the_user/debug.txt
+		echo "Debug: Configuration file not found: $CONFIG_FILE" >>/home/$the_user/debug.txt
 	fi
 
 	# Set wallpaper and wallpaper mode with PCManFM
@@ -409,47 +417,47 @@ if [ "$choice" == "y" ]; then
 
 	# Check if the configuration file exists
 	if [ -f "$DESKTOP_CONFIG_FILE" ]; then
-		echo "Debug: Updating the wallpaper mode to fit" >> /home/$the_user/debug.txt
+		echo "Debug: Updating the wallpaper mode to fit" >>/home/$the_user/debug.txt
 
-    		sed -i 's/^wallpaper_mode=.*/wallpaper_mode=fit/' "$DESKTOP_CONFIG_FILE"
+		sed -i 's/^wallpaper_mode=.*/wallpaper_mode=fit/' "$DESKTOP_CONFIG_FILE"
 
-		echo "Debug: Set Wallpaper Mode to fit" >> /home/$the_user/debug.txt
+		echo "Debug: Set Wallpaper Mode to fit" >>/home/$the_user/debug.txt
 
-		echo "Debug: Set Wallpaper" >> /home/$the_user/debug.txt
+		echo "Debug: Set Wallpaper" >>/home/$the_user/debug.txt
 
-    		sed -i "s|^wallpaper=.*|wallpaper=$HOME/Pictures/backgrounds/waves-midnight.jpg|" "$DESKTOP_CONFIG_FILE"
+		sed -i "s|^wallpaper=.*|wallpaper=$HOME/Pictures/backgrounds/waves-midnight.jpg|" "$DESKTOP_CONFIG_FILE"
 
-    		echo "Debug: Wallpaper set successfully" >> /home/$the_user/debug.txt
+		echo "Debug: Wallpaper set successfully" >>/home/$the_user/debug.txt
 	else
-    		echo "Debug: Desktop configuration file not found: $DESKTOP_CONFIG_FILE" >> /home/$the_user/debug.txt
+		echo "Debug: Desktop configuration file not found: $DESKTOP_CONFIG_FILE" >>/home/$the_user/debug.txt
 	fi
 
 	# Navigate back to the user's home directory
 	cd /home/$the_user
 
 	# Append the lines to the preferences file, using the value of $theme_option
-	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >> /home/$the_user/.icewm/preferences
+	echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >>/home/$the_user/.icewm/preferences
 
 	# Create the .config directory if it doesn't exist
 	if [ ! -d "/home/$the_user/.config" ]; then
-  		mkdir -p "/home/$the_user/.config"
-  		echo "Debug: Created .config directory" >> /home/$the_user/debug.txt
+		mkdir -p "/home/$the_user/.config"
+		echo "Debug: Created .config directory" >>/home/$the_user/debug.txt
 	fi
 
 	# Apply Resolution on Reboot/IceWM Restart
-	echo "" >> /home/$the_user/.xsessionrc
-	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >> /home/$the_user/.xsessionrc
-	echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >> /home/$the_user/.xsessionrc
-	echo "" >> /home/$the_user/.xsessionrc
-	echo "# Execute the extracted command" >> /home/$the_user/.xsessionrc
-	echo "eval \$xrandr_command" >> /home/$the_user/.xsessionrc
+	echo "" >>/home/$the_user/.xsessionrc
+	echo "# Extract the xrandr command from lxrandr-autostart.desktop" >>/home/$the_user/.xsessionrc
+	echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >>/home/$the_user/.xsessionrc
+	echo "" >>/home/$the_user/.xsessionrc
+	echo "# Execute the extracted command" >>/home/$the_user/.xsessionrc
+	echo "eval \$xrandr_command" >>/home/$the_user/.xsessionrc
 
 	# Fix permissions for .config directory
-	echo "Debug: Fixing permissions for .config directory" >> /home/$the_user/debug.txt
+	echo "Debug: Fixing permissions for .config directory" >>/home/$the_user/debug.txt
 	sudo chown -R $the_user:$the_user /home/$the_user/.config
 	chmod 755 /home/$the_user/.config
 
-	echo "Debug: Enabling printer service (CUPS)" >> /home/$the_user/debug.txt
+	echo "Debug: Enabling printer service (CUPS)" >>/home/$the_user/debug.txt
 
 	# Enable Printer Service (CUPS)
 	sudo systemctl start cups
@@ -458,16 +466,16 @@ if [ "$choice" == "y" ]; then
 	sudo usermod -aG lpadmin $the_user
 
 	# Add Daemon's to Startup
-	echo "xscreensaver -nosplash &" >> /home/$the_user/.xsessionrc
+	echo "xscreensaver -nosplash &" >>/home/$the_user/.xsessionrc
 
 	chown $the_user:$the_user /home/$the_user/.xsessionrc
 
-	echo "Debug: Updating and upgrading software" >> /home/$the_user/debug.txt
+	echo "Debug: Updating and upgrading software" >>/home/$the_user/debug.txt
 
 	# Update and Upgrade Software
 	sudo apt update && sudo apt upgrade
 
-	echo "Debug: Cleaning and removing orphaned files/data" >> /home/$the_user/debug.txt
+	echo "Debug: Cleaning and removing orphaned files/data" >>/home/$the_user/debug.txt
 
 	# Remove Unnecessary Packages
 	sudo apt remove lximage-qt qt5-assistant
@@ -481,11 +489,11 @@ if [ "$choice" == "y" ]; then
 
 	sudo chown $the_user:$the_user /home/$the_user/debug.txt
 
-	echo "Debug: Adding custom scripts" >> /home/$the_user/debug.txt
+	echo "Debug: Adding custom scripts" >>/home/$the_user/debug.txt
 
 	# Create the .scripts folder if it doesn't exist
 	if [ ! -d "/home/$the_user/.scripts" ]; then
-  		mkdir "/home/$the_user/.scripts"
+		mkdir "/home/$the_user/.scripts"
 	fi
 
 	# Create the desktop_icon_scan.sh script
@@ -504,16 +512,16 @@ update_icons() {
 	# Remove all symbolic links from the desktop directory
 	find "$desktop_dir" -type l -exec rm {} \;
 
-  	# Create new symbolic links
-  	for app in "$applications_dir"/*.desktop; do
-    		# Extract the filename from the path
-    		filename=$(basename "$app")
-    
-   		# Check if the file is in the exclude list
-    		if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
-      			ln -s "$app" "$desktop_dir"
-    		fi
-  	done
+	# Create new symbolic links
+	for app in "$applications_dir"/*.desktop; do
+		# Extract the filename from the path
+		filename=$(basename "$app")
+
+		# Check if the file is in the exclude list
+		if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
+			ln -s "$app" "$desktop_dir"
+		fi
+	done
 }
 
 # Initial update
@@ -521,9 +529,9 @@ update_icons
 
 # Monitor the applications directory for changes
 inotifywait -m -e create,delete,modify,moved_to,moved_from "$applications_dir" | while read -r directory events filename; do
-    if [[ "$filename" == *.desktop ]]; then
-        update_icons
-    fi
+	if [[ "$filename" == *.desktop ]]; then
+		update_icons
+	fi
 done
 EOF
 
@@ -533,9 +541,9 @@ EOF
 	chown $the_user:$the_user "/home/$the_user/.scripts/desktop_icon_scan.sh"
 
 	# Add to startup
-	echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >> /home/$the_user/.icewm/startup
+	echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >>/home/$the_user/.icewm/startup
 
-	echo "Debug: Setting Up Theming For Desktop" >> /home/$the_user/debug.txt
+	echo "Debug: Setting Up Theming For Desktop" >>/home/$the_user/debug.txt
 
 	# Install the Papirus icon theme
 	cd ~
@@ -552,20 +560,20 @@ EOF
 
 	# Check if the file exists
 	if [ -f "$file" ]; then
-    		# Check for existing lines and edit them, or append if they don't exist
-    		grep -q "gtk-icon-theme-name=" $file && sed -i 's/gtk-icon-theme-name=.*/gtk-icon-theme-name="Papirus-Dark"/' $file || echo 'gtk-icon-theme-name="Papirus-Dark"' >> $file
-    		grep -q "gtk-theme-name=" $file && sed -i 's/gtk-theme-name=.*/gtk-theme-name="Industrial"/' $file || echo 'gtk-theme-name="Industrial"' >> $file
+		# Check for existing lines and edit them, or append if they don't exist
+		grep -q "gtk-icon-theme-name=" $file && sed -i 's/gtk-icon-theme-name=.*/gtk-icon-theme-name="Papirus-Dark"/' $file || echo 'gtk-icon-theme-name="Papirus-Dark"' >>$file
+		grep -q "gtk-theme-name=" $file && sed -i 's/gtk-theme-name=.*/gtk-theme-name="Industrial"/' $file || echo 'gtk-theme-name="Industrial"' >>$file
 	else
-    		# Create the file and add the lines
-    		touch $file
-    		echo "# Custom GTK 2.0 settings" >> $file
-    		echo 'gtk-icon-theme-name="Papirus-Dark"' >> $file
-    		echo 'gtk-theme-name="Industrial"' >> $file
+		# Create the file and add the lines
+		touch $file
+		echo "# Custom GTK 2.0 settings" >>$file
+		echo 'gtk-icon-theme-name="Papirus-Dark"' >>$file
+		echo 'gtk-theme-name="Industrial"' >>$file
 	fi
 
 	clear
 
-	echo "Debug: Displaying installation completion message" >> /home/$the_user/debug.txt
+	echo "Debug: Displaying installation completion message" >>/home/$the_user/debug.txt
 
 	echo "///////////////////////////////////////////////////////////////////////////"
 	echo "INSTALLATION HAS COMPLETED!"
@@ -579,11 +587,13 @@ EOF
 	echo "Press Enter to reboot the system..."
 	read -p ""
 
-	echo "Debug: Rebooting" >> /home/$the_user/debug.txt
+	echo "Debug: Rebooting" >>/home/$the_user/debug.txt
 
 	# Reboot
 	sudo reboot
 else
-    	echo "Exiting the script..."
-    	exit 0
+	echo "Exiting the script..."
+	exit 0
 fi
+
+EOF

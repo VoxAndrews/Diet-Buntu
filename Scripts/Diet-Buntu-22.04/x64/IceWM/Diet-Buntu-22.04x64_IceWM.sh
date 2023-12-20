@@ -71,7 +71,7 @@ check_internet_connection() {
 
     echo "Checking for internet connection..."
 
-    if wget -q --spider http://8.8.8.8; then
+    if wget -q --spider http://google.com; then
         echo "Internet connection detected."
     else
         echo "No internet connection detected. Please ensure you're connected to the internet and try again."

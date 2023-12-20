@@ -226,6 +226,20 @@ prompt_for_clamav_daemon() {
     done
 }
 
+install_packages() {
+    local packages=("$@")
+    sudo apt install -y "${packages[@]}"
+}
+
+download_and_install_deb() {
+    local url=$1
+    local deb_file="/tmp/$(basename "$url")"
+    wget -c -O "$deb_file" "$url"
+    sudo dpkg -i "$deb_file"
+    sudo apt-get -f install
+    rm "$deb_file"
+}
+
 begin_installation() {
     clear
     echo "Debug: Beginning installation process" >>/home/$the_user/debug.txt
@@ -245,22 +259,19 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    # Install Software and Libraries from Ubuntu
-    sudo apt install -y git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping)
+    install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
     if [ "$utility_option" == "1" ]; then
-        sudo apt install -y claws-mail gnome-software drawing
+        install_packages claws-mail gnome-software drawing
 
-        wget -c https://www.softmaker.net/down/softmaker-freeoffice-2021_1064-01_amd64.deb
-        sudo dpkg -i softmaker-freeoffice-2021_1064-01_amd64.deb
-        sudo rm softmaker-freeoffice-2021_1064-01_amd64.deb
-        sudo apt-get -f install
+        download_and_install_deb "https://www.softmaker.net/down/softmaker-freeoffice-2021_1064-01_amd64.deb"
     fi
 
     # Check the user's choice for the Entertainment Package
     if [ "$entertainment_option" == "1" ]; then
-        sudo apt install -y freecol openttd openttd-opensfx pingus frogatto
+        install_packages freecol openttd openttd-opensfx pingus frogatto
     fi
 
     # Check the user wants to stop the clamav daemon
@@ -269,7 +280,13 @@ begin_installation() {
         sudo systemctl disable clamav-daemon
     fi
 
-    echo "Debug: Downloading and installing/building software" >>/home/$the_user/debug.txt
+    echo "Debug: Downloading & Installing Software from .deb files" >>/home/$the_user/debug.txt
+
+    download_and_install_deb "https://github.com/peazip/PeaZip/releases/download/9.3.0/peazip_9.3.0.LINUX.GTK2-1_amd64.deb"
+    download_and_install_deb "https://github.com/dave-theunsub/clamtk/releases/download/v6.16/clamtk_6.16-1_all.deb"
+    download_and_install_deb "https://github.com/minbrowser/min/releases/download/v1.30.0/min-1.30.0-amd64.deb"
+
+    echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 
     # Download and Install/Build Software
     git clone --recurse-submodules https://github.com/fairyglade/ly
@@ -291,21 +308,6 @@ begin_installation() {
     cd ..
     sudo rm -r icewm
     sudo rm -r os-depends.sh
-
-    wget -c https://github.com/peazip/PeaZip/releases/download/9.3.0/peazip_9.3.0.LINUX.GTK2-1_amd64.deb
-    sudo dpkg -i peazip_9.3.0.LINUX.GTK2-1_amd64.deb
-    sudo rm peazip_9.3.0.LINUX.GTK2-1_amd64.deb
-    sudo apt-get -f install
-
-    wget -c https://github.com/dave-theunsub/clamtk/releases/download/v6.16/clamtk_6.16-1_all.deb
-    sudo dpkg -i clamtk_6.16-1_all.deb
-    sudo rm clamtk_6.16-1_all.deb
-    sudo apt-get -f install
-
-    wget -O "/tmp/min-1.30.0-amd64.deb" "https://github.com/minbrowser/min/releases/download/v1.30.0/min-1.30.0-amd64.deb"
-    sudo dpkg -i /tmp/min-1.30.0-amd64.deb
-    sudo rm /tmp/min-1.30.0-amd64.deb
-    sudo apt-get -f install
 
     git clone https://github.com/tsujan/FeatherPad.git
     cd FeatherPad

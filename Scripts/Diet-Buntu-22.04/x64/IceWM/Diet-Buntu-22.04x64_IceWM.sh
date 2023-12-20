@@ -482,18 +482,6 @@ begin_installation() {
 
     echo "Debug: Cleaning and removing orphaned files/data" >>/home/$the_user/debug.txt
 
-    # Remove Unnecessary Packages
-    sudo apt remove lximage-qt qt5-assistant
-
-    # Clean and Remove Orphaned Files/Data
-    sudo apt autoremove -y
-    sudo apt autoclean -y
-
-    # Update Bootloader
-    sudo update-grub
-
-    sudo chown $the_user:$the_user /home/$the_user/debug.txt
-
     echo "Debug: Adding custom scripts" >>/home/$the_user/debug.txt
 
     # Create the .scripts folder if it doesn't exist
@@ -539,6 +527,18 @@ begin_installation() {
         echo 'gtk-icon-theme-name="Papirus-Dark"' >>$file
         echo 'gtk-theme-name="Industrial"' >>$file
     fi
+
+    # Remove Unnecessary Packages
+    sudo apt remove lximage-qt qt5-assistant build-essential libpam0g-dev libxcb1-dev qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools
+
+    # Clean and Remove Orphaned Files/Data
+    sudo apt autoremove -y
+    sudo apt autoclean -y
+
+    # Update Bootloader
+    sudo update-grub
+
+    sudo chown $the_user:$the_user /home/$the_user/debug.txt
 }
 
 exit_message() {

@@ -323,7 +323,7 @@ begin_installation() {
     sudo mv icewm-theme-icepick-master/preferences /usr/share/icewm/
 
     # Enable Task Bar Battery Monitor If Battery Is Present
-    sed -i '/# Taskbar/a TaskBarShowAPMAuto=1' /usr/share/icewm/preferences
+    sudo sed -i '/# Taskbar/a TaskBarShowAPMAuto=1' /usr/share/icewm/preferences
 
     sudo rm -r icewm-theme-icepick-master master.zip
     mkdir -p /home/$the_user/.icewm
@@ -373,8 +373,8 @@ begin_installation() {
     fi
 
     # Overwrite the preferences file in the user's .icewm folder with the one from /usr/share/icewm/
-    cp /usr/share/icewm/preferences /home/$the_user/.icewm/preferences
-    chown $the_user:$the_user /home/$the_user/.icewm/preferences
+    sudo cp /usr/share/icewm/preferences /home/$the_user/.icewm/preferences
+    sudo chown $the_user:$the_user /home/$the_user/.icewm/preferences
 
     #Add pcmanfm to startup
     echo "pcmanfm --desktop &" >>/home/$the_user/.xsessionrc
@@ -389,7 +389,7 @@ begin_installation() {
         if grep -q "^quick_exec=0" "$CONFIG_FILE"; then
             echo "Debug: quick_exec found, setting to 1" >>/home/$the_user/debug.txt
 
-            sed -i 's/^quick_exec=0/quick_exec=1/' "$CONFIG_FILE"
+            sudo sed -i 's/^quick_exec=0/quick_exec=1/' "$CONFIG_FILE"
 
             echo "Debug: quick_exec set to 1" >>/home/$the_user/debug.txt
         elif grep -q "^quick_exec=" "$CONFIG_FILE"; then
@@ -413,13 +413,13 @@ begin_installation() {
     if [ -f "$DESKTOP_CONFIG_FILE" ]; then
         echo "Debug: Updating the wallpaper mode to fit" >>/home/$the_user/debug.txt
 
-        sed -i 's/^wallpaper_mode=.*/wallpaper_mode=fit/' "$DESKTOP_CONFIG_FILE"
+        sudo sed -i 's/^wallpaper_mode=.*/wallpaper_mode=fit/' "$DESKTOP_CONFIG_FILE"
 
         echo "Debug: Set Wallpaper Mode to fit" >>/home/$the_user/debug.txt
 
         echo "Debug: Set Wallpaper" >>/home/$the_user/debug.txt
 
-        sed -i "s|^wallpaper=.*|wallpaper=$HOME/Pictures/backgrounds/diet-buntu_BACKGROUND5_4K.png|" "$DESKTOP_CONFIG_FILE"
+        sudo sed -i "s|^wallpaper=.*|wallpaper=$HOME/Pictures/backgrounds/diet-buntu_BACKGROUND5_4K.png|" "$DESKTOP_CONFIG_FILE"
 
         echo "Debug: Wallpaper set successfully" >>/home/$the_user/debug.txt
     else
@@ -449,7 +449,7 @@ begin_installation() {
     # Fix permissions for .config directory
     echo "Debug: Fixing permissions for .config directory" >>/home/$the_user/debug.txt
     sudo chown -R $the_user:$the_user /home/$the_user/.config
-    chmod 755 /home/$the_user/.config
+    sudo chmod 755 /home/$the_user/.config
 
     echo "Debug: Enabling printer service (CUPS)" >>/home/$the_user/debug.txt
 
@@ -463,13 +463,6 @@ begin_installation() {
     echo "xscreensaver -nosplash &" >>/home/$the_user/.xsessionrc
 
     chown $the_user:$the_user /home/$the_user/.xsessionrc
-
-    echo "Debug: Updating and upgrading software" >>/home/$the_user/debug.txt
-
-    # Update and Upgrade Software
-    sudo apt update && sudo apt upgrade
-
-    echo "Debug: Cleaning and removing orphaned files/data" >>/home/$the_user/debug.txt
 
     echo "Debug: Adding custom scripts" >>/home/$the_user/debug.txt
 
@@ -507,8 +500,8 @@ begin_installation() {
     # Check if the file exists
     if [ -f "$file" ]; then
         # Check for existing lines and edit them, or append if they don't exist
-        grep -q "gtk-icon-theme-name=" $file && sed -i 's/gtk-icon-theme-name=.*/gtk-icon-theme-name="Papirus-Dark"/' $file || echo 'gtk-icon-theme-name="Papirus-Dark"' >>$file
-        grep -q "gtk-theme-name=" $file && sed -i 's/gtk-theme-name=.*/gtk-theme-name="Industrial"/' $file || echo 'gtk-theme-name="Industrial"' >>$file
+        grep -q "gtk-icon-theme-name=" $file && sudo sed -i 's/gtk-icon-theme-name=.*/gtk-icon-theme-name="Papirus-Dark"/' $file || echo 'gtk-icon-theme-name="Papirus-Dark"' >>$file
+        grep -q "gtk-theme-name=" $file && sudo sed -i 's/gtk-theme-name=.*/gtk-theme-name="Industrial"/' $file || echo 'gtk-theme-name="Industrial"' >>$file
     else
         # Create the file and add the lines
         touch $file
@@ -516,6 +509,13 @@ begin_installation() {
         echo 'gtk-icon-theme-name="Papirus-Dark"' >>$file
         echo 'gtk-theme-name="Industrial"' >>$file
     fi
+
+    echo "Debug: Updating and upgrading software" >>/home/$the_user/debug.txt
+
+    # Update and Upgrade Software
+    sudo apt update && sudo apt upgrade
+
+    echo "Debug: Cleaning and removing orphaned files/data" >>/home/$the_user/debug.txt
 
     # Remove Unnecessary Packages
     sudo apt remove lximage-qt qt5-assistant build-essential libpam0g-dev libxcb1-dev qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools

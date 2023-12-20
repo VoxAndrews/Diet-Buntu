@@ -264,7 +264,7 @@ begin_installation() {
 
     # Check the user's choice for the Utility Software Package
     if [ "$utility_option" == "1" ]; then
-        install_packages claws-mail gnome-software drawing gnupg gnupg2 gpgme libetpan20 libldap-2.5-0 aspell enchant bogofilter spamassassin
+        install_packages claws-mail gnome-software drawing gnupg libgpgme11 libetpan20 libldap-2.5-0 aspell enchant bogofilter spamassassin
 
         download_and_install_deb "https://www.softmaker.net/down/softmaker-freeoffice-2021_1064-01_amd64.deb"
     fi

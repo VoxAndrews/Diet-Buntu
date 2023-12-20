@@ -14,13 +14,13 @@ I wanted to make sure this came with a few different things so people could have
 - git
 - nano
 - VLC
-- Polo File Manager
-- LibreOffice
-- Nitrogen
+- PCManFM
+- Free Office
 - Claws Mail
 - qView
 - galculator
 - GNOME Software
+- ClamAV
 - ...And so much more!
 
 ## BEFORE INSTALLING

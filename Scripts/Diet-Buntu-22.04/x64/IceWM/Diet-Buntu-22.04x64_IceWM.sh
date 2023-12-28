@@ -259,7 +259,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc connman-gtk libimlib2 libqt5printsupport5 policykit-1 lxpolkit)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -298,12 +298,6 @@ begin_installation() {
         sudo systemctl stop clamav-daemon
         sudo systemctl disable clamav-daemon
     fi
-
-    echo "Debug: Downloading & Installing Software from .deb files" >>/home/$the_user/debug.txt
-
-    download_and_install_deb "https://github.com/peazip/PeaZip/releases/download/9.3.0/peazip_9.3.0.LINUX.GTK2-1_amd64.deb"
-    download_and_install_deb "https://github.com/dave-theunsub/clamtk/releases/download/v6.16/clamtk_6.16-1_all.deb"
-    download_and_install_deb "https://github.com/minbrowser/min/releases/download/v1.30.0/min-1.30.0-amd64.deb"
 
     echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 
@@ -398,9 +392,6 @@ begin_installation() {
     sudo cp /usr/share/icewm/preferences /home/$the_user/.icewm/preferences
     sudo chown $the_user:$the_user /home/$the_user/.icewm/preferences
 
-    #Add pcmanfm to startup
-    echo "pcmanfm --desktop &" >>/home/$the_user/.xsessionrc
-
     # Set program icon files to automatically execute with PCManFM
     # Define the path to the libfm configuration file
     CONFIG_FILE="$HOME/.config/libfm/libfm.conf"
@@ -460,14 +451,6 @@ begin_installation() {
         echo "Debug: Created .config directory" >>/home/$the_user/debug.txt
     fi
 
-    # Apply Resolution on Reboot/IceWM Restart
-    echo "" >>/home/$the_user/.xsessionrc
-    echo "# Extract the xrandr command from lxrandr-autostart.desktop" >>/home/$the_user/.xsessionrc
-    echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >>/home/$the_user/.xsessionrc
-    echo "" >>/home/$the_user/.xsessionrc
-    echo "# Execute the extracted command" >>/home/$the_user/.xsessionrc
-    echo "eval \$xrandr_command" >>/home/$the_user/.xsessionrc
-
     # Fix permissions for .config directory
     echo "Debug: Fixing permissions for .config directory" >>/home/$the_user/debug.txt
     sudo chown -R $the_user:$the_user /home/$the_user/.config
@@ -480,11 +463,6 @@ begin_installation() {
     sudo systemctl enable cups
 
     sudo usermod -aG lpadmin $the_user
-
-    # Add Daemon's to Startup
-    echo "xscreensaver -nosplash &" >>/home/$the_user/.xsessionrc
-
-    chown $the_user:$the_user /home/$the_user/.xsessionrc
 
     echo "Debug: Adding custom scripts" >>/home/$the_user/debug.txt
 
@@ -501,9 +479,30 @@ begin_installation() {
     chown $the_user:$the_user "/home/$the_user/.scripts"
     chown $the_user:$the_user "/home/$the_user/.scripts/desktop_icon_scan.sh"
 
-    # Add to startup
+    # Add Programs/Scripts to Startup
+    # .xinitrc Process
+    # Apply Resolution on Reboot/IceWM Restart
+    echo "" >>/home/$the_user/.xinitrc
+    echo "# Extract the xrandr command from lxrandr-autostart.desktop" >>/home/$the_user/.xinitrc
+    echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >>/home/$the_user/.xinitrc
+    echo "" >>/home/$the_user/.xinitrc
+    echo "# Execute the extracted command" >>/home/$the_user/.xinitrc
+    echo "eval \$xrandr_command" >>/home/$the_user/.xinitrc
+
+    # .xsessionrc Process
+    # Add pcmanfm to startup
+    echo "pcmanfm --desktop &" >>/home/$the_user/.xsessionrc
+
+    # Add Daemon's to Startup
+    echo "xscreensaver -nosplash &" >>/home/$the_user/.xsessionrc
+
+    # Startup Programs/Scripts
     echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >>/home/$the_user/.xsessionrc
     echo "/usr/bin/lxpolkit &" >>/home/$the_user/.xsessionrc
+    echo "cmst --minimized &" >>/home/$the_user/.xsessionrc
+
+    chown $the_user:$the_user /home/$the_user/.xinitrc
+    chown $the_user:$the_user /home/$the_user/.xsessionrc
 
     echo "Debug: Setting Up Theming For Desktop" >>/home/$the_user/debug.txt
 
@@ -541,7 +540,7 @@ begin_installation() {
     echo "Debug: Cleaning and removing orphaned files/data" >>/home/$the_user/debug.txt
 
     # Remove Unnecessary Packages
-    sudo apt remove lximage-qt qt5-assistant build-essential libpam0g-dev libxcb1-dev qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools
+    sudo apt remove lximage-qt qt5-assistant build-essential libpam0g-dev libxcb1-dev qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools vim vim-common vim-tiny htop byobu
 
     # Clean and Remove Orphaned Files/Data
     sudo apt autoremove -y

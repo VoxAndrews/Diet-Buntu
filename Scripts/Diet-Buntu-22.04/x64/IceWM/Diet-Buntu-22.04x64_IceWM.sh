@@ -267,11 +267,29 @@ begin_installation() {
         # Install the AppGrid repository
         sudo add-apt-repository ppa:appgrid/stable
 
-        # Update the repositories
-        sudo apt update
+        # Temporarily disable 'set -e' for the next set of commands (AppGrid causes it to error out due to missing dependencies)
+        set +e
 
         # Install the Utility Software Packages
         install_packages claws-mail gnupg libgpgme11 libetpan20 libldap-2.5-0 aspell aspell-en enchant-2 libenchant-2-2 libenchant-2-voikko bogofilter claws-mail-bogofilter spamassassin claws-mail-spamassassin appgrid drawing
+
+        echo "Debug: Fixing broken AppGrid package (Requires dependencies not provided)" >>/home/$the_user/debug.txt
+
+        # Run command to fix broken dependencies
+        sudo apt --fix-broken install
+
+        # Check the return value of the previous command if necessary
+        # $? gives you the exit status of the last command executed
+        if [ $? -ne 0 ]; then
+            echo "Debug: Error fixing broken AppGrid dependencies. Exiting..." >>/home/$the_user/debug.txt
+
+            exit 1
+        else
+            echo "Successfully fixed broken AppGrid dependencies"
+        fi
+
+        # Re-enable 'set -e' after broken dependencies are fixed
+        set -e
 
         # Download and Install FreeOffice
         download_and_install_deb "https://www.softmaker.net/down/softmaker-freeoffice-2021_1068-01_amd64.deb"

@@ -264,12 +264,22 @@ begin_installation() {
 
     # Check the user's choice for the Utility Software Package
     if [ "$utility_option" == "1" ]; then
+        echo "Debug: Add AppGrid Repository" >>/home/$the_user/debug.txt
+
         # Install the AppGrid repository
         sudo add-apt-repository ppa:appgrid/stable
 
+        echo "Debug: Create Folders/File for AppGrid" >>/home/$the_user/debug.txt
         # Create folders and files for AppGrid
-        sudo mkdir /etc/init
-        sudo touch /etc/init/appgrid.conf
+        # Check if /etc/init directory exists, if not then create it
+        if [ ! -d "/etc/init" ]; then
+            sudo mkdir /etc/init
+        fi
+
+        # Check if /etc/init/appgrid.conf file exists, if not then create it
+        if [ ! -f "/etc/init/appgrid.conf" ]; then
+            sudo touch /etc/init/appgrid.conf
+        fi
 
         # Install the Utility Software Packages
         install_packages claws-mail gnupg libgpgme11 libetpan20 libldap-2.5-0 aspell aspell-en enchant-2 libenchant-2-2 libenchant-2-voikko bogofilter claws-mail-bogofilter spamassassin claws-mail-spamassassin appgrid drawing

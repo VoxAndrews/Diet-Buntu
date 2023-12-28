@@ -128,7 +128,7 @@ prompt_for_utility_software_package() {
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
 
-    # Prompt the user for their choice
+    # Prompt the user for their choice of whether they install the utility software package or not
     while true; do
         read -p "Do you want to install the Utility Software Package? (Y/N): " yn
         case $yn in
@@ -165,7 +165,7 @@ prompt_for_entertainment_package() {
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
 
-    # Prompt the user for their choice of whether they want to enable or disable theme menu
+    # Prompt the user for their choice of whether they want to install the entertainment package or not
     while true; do
         read -p "Do you want to install the Entertainment Package? (Y/N): " yn
         case $yn in
@@ -175,6 +175,44 @@ prompt_for_entertainment_package() {
                 ;;
             [Nn]*)
                 entertainment_option=0
+                break
+                ;;
+            *) echo "Please answer Y or N." ;;
+        esac
+    done
+}
+
+prompt_for_printer_package() {
+    clear
+    echo "Debug: Displaying Printer Package message" >>/home/$the_user/debug.txt
+
+    # Display a message about the 'Printer Package'
+    echo ""
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo "PRINTER PACKAGE INSTALLATION"
+    echo ""
+    echo "The Printer Package is a set generic drivers as well as the CUPS printing"
+    echo "system, designed to give the user the compatibility with printers possible."
+    echo "Included in this package is:"
+    echo ""
+    echo "- CUPS (Common Unix Printing System)"
+    echo "- Gutenprint"
+    echo "- CUPS PDF"
+    echo "- HPLIP (HP Printers)"
+    echo "- ESC/P-R (Epson Printers)"
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo ""
+
+    # Prompt the user for their choice of whether they install the printer package or not
+    while true; do
+        read -p "Do you want to install the Printer Package? (Y/N): " yn
+        case $yn in
+            [Yy]*)
+                printer_option=1
+                break
+                ;;
+            [Nn]*)
+                printer_option=0
                 break
                 ;;
             *) echo "Please answer Y or N." ;;
@@ -209,7 +247,7 @@ prompt_for_clamav_daemon() {
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
 
-    # Prompt the user for their choice of whether they want to enable or disable theme menu
+    # Prompt the user for their choice of whether they want to enable or disable the ClamAV Background Daemon
     while true; do
         read -p "Do you want to disable ClamAV Background Daemon? (Y/N): " yn
         case $yn in
@@ -259,11 +297,12 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
     if [ "$utility_option" == "1" ]; then
+        echo "Debug: Installing the Utility Package" >>/home/$the_user/debug.txt
         echo "Debug: Add AppGrid Repository" >>/home/$the_user/debug.txt
 
         # Install the AppGrid repository
@@ -290,11 +329,27 @@ begin_installation() {
 
     # Check the user's choice for the Entertainment Package
     if [ "$entertainment_option" == "1" ]; then
+        echo "Debug: Installing the Entertainment Package" >>/home/$the_user/debug.txt
+
         install_packages freecol openttd openttd-opensfx pingus frogatto
+    fi
+
+    if [ "$printer_option" == "1" ]; then
+        echo "Debug: Installing the Printer Package" >>/home/$the_user/debug.txt
+        # Install the Printer Package
+        install_packages cups system-config-printer printer-driver-gutenprint hplip printer-driver-cups-pdf printer-driver-escpr
+
+        echo "Debug: Enabling printer service (CUPS)" >>/home/$the_user/debug.txt
+
+        # Enable Printer Service (CUPS)
+        sudo systemctl start cups
+        sudo systemctl enable cups
     fi
 
     # Check the user wants to stop the clamav daemon
     if [ "$clamav_option" == "1" ]; then
+        echo "Debug: Disabling clamav daemon" >>/home/$the_user/debug.txt
+
         sudo systemctl stop clamav-daemon
         sudo systemctl disable clamav-daemon
     fi
@@ -423,12 +478,6 @@ begin_installation() {
     sudo chown -R $the_user:$the_user /home/$the_user/.config
     sudo chmod 755 /home/$the_user/.config
 
-    echo "Debug: Enabling printer service (CUPS)" >>/home/$the_user/debug.txt
-
-    # Enable Printer Service (CUPS)
-    sudo systemctl start cups
-    sudo systemctl enable cups
-
     sudo usermod -aG lpadmin $the_user
 
     echo "Debug: Adding custom scripts" >>/home/$the_user/debug.txt
@@ -556,6 +605,7 @@ main() {
         prompt_for_themes_menu
         prompt_for_utility_software_package
         prompt_for_entertainment_package
+        prompt_for_printer_package
         prompt_for_clamav_daemon
         begin_installation
         exit_message

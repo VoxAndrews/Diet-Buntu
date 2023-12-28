@@ -268,8 +268,8 @@ begin_installation() {
         sudo add-apt-repository ppa:appgrid/stable
 
         # Update the repositories
-        sudo apt update 
-        
+        sudo apt update
+
         # Install the Utility Software Packages
         install_packages claws-mail gnupg libgpgme11 libetpan20 libldap-2.5-0 aspell aspell-en enchant-2 libenchant-2-2 libenchant-2-voikko bogofilter claws-mail-bogofilter spamassassin claws-mail-spamassassin appgrid drawing
 

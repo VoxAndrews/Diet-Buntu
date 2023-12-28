@@ -406,7 +406,6 @@ begin_installation() {
     chmod 664 /home/$the_user/.config/pcmanfm/default/desktop-items-0.conf
     chown $the_user:$the_user /home/$the_user/.config/pcmanfm/default/desktop-items-0.conf
 
-
     # Navigate back to the user's home directory
     cd /home/$the_user
 

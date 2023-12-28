@@ -352,7 +352,7 @@ begin_installation() {
     echo "Debug: Creating default folders" >>/home/$the_user/debug.txt
 
     # Create Default Folders
-    mkdir -p /home/$the_user/Documents /home/$the_user/Pictures /home/$the_user/Downloads /home/$the_user/Music /home/$the_user/Videos /home/$the_user/Desktop
+    mkdir -p /home/$the_user/Documents /home/$the_user/Pictures /home/$the_user/Downloads /home/$the_user/Music /home/$the_user/Videos /home/$the_user/Desktop /home/$the_user/Templates /home/$the_user/Public
 
     # Fix permissions (either here or right after each folder is created)
     for folder in Desktop Documents Downloads Music Pictures Videos Templates Public; do

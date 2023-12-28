@@ -123,7 +123,7 @@ prompt_for_utility_software_package() {
     echo "The Utility Software Package includes essential utility software like:"
     echo "- FreeOffice: A powerful, Microsoft Office compatible suite."
     echo "- Claws Mail: An email client."
-    echo "- GNOME Software: Software Center for application management."
+    echo "- AppGrid: A lightweight Software Center for application management."
     echo "- Drawing: A basic image editor program"
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
@@ -259,7 +259,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lightdm lightdm-gtk-greeter dbus connman connman-doc connman-gtk libimlib2 libqt5printsupport5)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator cups printer-driver-gutenprint system-config-printer lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc connman-gtk libimlib2 libqt5printsupport5 policykit-1 lxpolkit)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -344,9 +344,12 @@ begin_installation() {
     mkdir -p /home/$the_user/Documents /home/$the_user/Pictures /home/$the_user/Downloads /home/$the_user/Music /home/$the_user/Videos /home/$the_user/Desktop
 
     # Fix permissions (either here or right after each folder is created)
-    for folder in Desktop Documents Downloads Music Pictures Videos; do
+    for folder in Desktop Documents Downloads Music Pictures Videos Templates Public; do
         sudo chown $the_user:$the_user /home/$the_user/$folder
     done
+
+    # Update the user's XDG user directories
+    xdg-user-dirs-update
 
     echo "Debug: Downloading default wallpapers" >>/home/$the_user/debug.txt
 
@@ -489,6 +492,7 @@ begin_installation() {
 
     # Add to startup
     echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >>/home/$the_user/.xsessionrc
+    echo "/usr/bin/lxpolkit &" >>/home/$the_user/.xsessionrc
 
     echo "Debug: Setting Up Theming For Desktop" >>/home/$the_user/debug.txt
 

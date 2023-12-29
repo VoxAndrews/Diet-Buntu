@@ -297,7 +297,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -461,6 +461,13 @@ begin_installation() {
     chmod 664 /home/$the_user/.config/pcmanfm/default/desktop-items-0.conf
     chown $the_user:$the_user /home/$the_user/.config/pcmanfm/default/desktop-items-0.conf
 
+    # Download configuration file for volumeicon
+    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/volumeicon
+    mkdir -p /home/$the_user/.config/volumeicon/
+    sudo mv -f volumeicon /home/$the_user/.config/volumeicon/volumeicon
+    chmod 664 /home/$the_user/.config/volumeicon/volumeicon
+    chown $the_user:$the_user /home/$the_user/.config/volumeicon/volumeicon
+
     # Navigate back to the user's home directory
     cd /home/$the_user
 
@@ -495,17 +502,18 @@ begin_installation() {
     chown $the_user:$the_user "/home/$the_user/.scripts"
     chown $the_user:$the_user "/home/$the_user/.scripts/desktop_icon_scan.sh"
 
-    # Add Programs/Scripts to Startup
-    # .xinitrc Process
-    # Apply Resolution on Reboot/IceWM Restart
-    echo "" >>/home/$the_user/.xinitrc
-    echo "# Extract the xrandr command from lxrandr-autostart.desktop" >>/home/$the_user/.xinitrc
-    echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >>/home/$the_user/.xinitrc
-    echo "" >>/home/$the_user/.xinitrc
-    echo "# Execute the extracted command" >>/home/$the_user/.xinitrc
-    echo "eval \$xrandr_command" >>/home/$the_user/.xinitrc
+    echo "Debug: Adding Startup Programs/Scripts" >>/home/$the_user/debug.txt
 
+    # Add Programs/Scripts to Startup
     # .xsessionrc Process
+    # Apply Resolution on Reboot/IceWM Restart
+    echo "" >>/home/$the_user/.xsessionrc
+    echo "# Extract the xrandr command from lxrandr-autostart.desktop" >>/home/$the_user/.xsessionrc
+    echo "xrandr_command=\$(grep \"Exec=\" /home/$the_user/.config/autostart/lxrandr-autostart.desktop | cut -d\"'\" -f2)" >>/home/$the_user/.xsessionrc
+    echo "" >>/home/$the_user/.xsessionrc
+    echo "# Execute the extracted command" >>/home/$the_user/.xsessionrc
+    echo "eval \$xrandr_command" >>/home/$the_user/.xsessionrc
+
     # Add pcmanfm to startup
     echo "pcmanfm --desktop &" >>/home/$the_user/.xsessionrc
 
@@ -516,8 +524,8 @@ begin_installation() {
     echo "/home/$the_user/.scripts/desktop_icon_scan.sh &" >>/home/$the_user/.xsessionrc
     echo "/usr/bin/lxpolkit &" >>/home/$the_user/.xsessionrc
     echo "cmst --minimized &" >>/home/$the_user/.xsessionrc
+    echo "volumeicon &" >>/home/$the_user/.xsessionrc
 
-    chown $the_user:$the_user /home/$the_user/.xinitrc
     chown $the_user:$the_user /home/$the_user/.xsessionrc
 
     echo "Debug: Setting Up Theming For Desktop" >>/home/$the_user/debug.txt

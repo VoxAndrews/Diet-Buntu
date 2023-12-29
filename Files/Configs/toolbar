@@ -1,0 +1,4 @@
+prog "Terminal" xterm.svg xterm
+prog "File Manager" system-file-manager.svg pcmanfm
+prog "Email Client" email.svg claws-mail
+prog "Web Browser" min.svg min

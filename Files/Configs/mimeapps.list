@@ -1,0 +1,9 @@
+[Default Applications]
+application/vnd.debian.binary-package=gdebi.desktop;
+image/png=com.interversehq.qView.desktop;
+image/jpeg=com.interversehq.qView.desktop;
+
+[Added Associations]
+application/vnd.debian.binary-package=gdebi.desktop;
+image/png=com.interversehq.qView.desktop;
+image/jpeg=com.interversehq.qView.desktop;

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+resolution_file="/var/lib/resolutions/current.resolution"
+log_file="/var/log/resolution_change.log"
+
+echo "Attempting resolution update script at $(date)" >> $log_file
+
+if [ -f "$resolution_file" ]; then
+	resolution=$(cat $resolution_file)
+	
+	# Fix to run xrandr command
+	XAUTHORITY=/var/run/lxdm/lxdm-:0.auth
+	export XAUTHORITY
+	
+	DISPLAY=:0
+	export DISPLAY
+	
+	# Identify the active output
+	active_output=$(xrandr | grep ' connected' | grep -v 'disconnected' | head -n 1 | cut -d ' ' -f1)
+	
+	if [ -n "$active_output" ]; then
+		echo "Attempting to set resolution to $resolution_file" >> $log_file
+	
+		# Adjust resolution
+		/usr/bin/xrandr --output $active_output --mode $resolution >> $log_file 2>&1
+		
+		echo "Resolution set command completed at $(date)" >> $log_file
+	else
+		echo "No active output found" >> $log_file
+	fi
+else
+	echo "Resolution file not found at $resolution_file" >> $log_file
+fi

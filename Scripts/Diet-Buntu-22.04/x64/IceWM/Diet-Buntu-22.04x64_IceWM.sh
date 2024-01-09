@@ -511,6 +511,13 @@ begin_installation() {
     chmod 664 /home/$the_user/.config/mimeapps.list
     chown $the_user:$the_user /home/$the_user/.config/mimeapps.list
 
+    # Download configuration file for xterm
+    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/.Xresources
+    sudo mv -f .Xresources /home/$the_user/.Xresources
+    chmod 664 /home/$the_user/.Xresources
+    chown $the_user:$the_user /home/$the_user/.Xresources
+    xrdb -merge ~/.Xresources
+
     # Navigate back to the user's home directory
     cd /home/$the_user
 

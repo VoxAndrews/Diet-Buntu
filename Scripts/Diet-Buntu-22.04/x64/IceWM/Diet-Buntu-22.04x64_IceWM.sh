@@ -584,6 +584,10 @@ begin_installation() {
     echo "cmst --minimized &" >>/home/$the_user/.xsessionrc
     echo "volumeicon &" >>/home/$the_user/.xsessionrc
 
+    echo "" >> /home/$the_user/.xsessionrc
+    echo "# Load XTerm configuration" >> /home/$the_user/.xsessionrc
+    echo "xrdb -merge /home/$the_user/.Xresources" >> /home/$the_user/.xsessionrc
+
     chown $the_user:$the_user /home/$the_user/.xsessionrc
 
     echo "Debug: Setting Up Theming For Desktop" >>/home/$the_user/debug.txt

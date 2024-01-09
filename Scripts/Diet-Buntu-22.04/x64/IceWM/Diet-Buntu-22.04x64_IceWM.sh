@@ -165,7 +165,7 @@ prompt_for_entertainment_package() {
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
 
-    # Prompt the user for their choice of whether they want to install the entertainment package or not
+    # Prompt the user for their choice of whether they want to enable or disable theme menu
     while true; do
         read -p "Do you want to install the Entertainment Package? (Y/N): " yn
         case $yn in
@@ -297,7 +297,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping lxdm dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -354,9 +354,16 @@ begin_installation() {
         sudo systemctl disable clamav-daemon
     fi
 
-    echo "Debug: Building software from .deb files" >>/home/$the_user/debug.txt
+    echo "Debug: Downloading & Installing Software from .deb files" >>/home/$the_user/debug.txt
 
     # Download and Install Software from .deb files
+
+    # Download and Install Latest Clamtk
+    wget -qO- "https://api.github.com/repos/dave-theunsub/clamtk/releases/latest" | jq -r '.assets[] | select(.name | endswith("all.deb")) | .browser_download_url'
+    wget $(wget -qO- "https://api.github.com/repos/dave-theunsub/clamtk/releases/latest" | jq -r '.assets[] | select(.name | endswith("all.deb")) | .browser_download_url')
+    sudo dpkg -i clamtk*.deb
+    sudo apt-get -f install
+    rm clamtk*.deb
 
     # Download and Install Latest Min Browser
     wget -qO- "https://api.github.com/repos/minbrowser/min/releases/latest" | jq -r '.assets[] | select(.name | endswith("amd64.deb")) | .browser_download_url'
@@ -367,7 +374,15 @@ begin_installation() {
 
     echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 
-    # Download and Install/Build Software
+    # Download and Install/Build Ly Display Manager
+    git clone --recurse-submodules https://github.com/fairyglade/ly
+    cd ly
+    make
+    sudo make install installsystemd
+    cd ..
+    sudo rm -r ly
+
+    # Download and Install/Build IceWM
     git clone https://github.com/bbidulock/icewm.git
     wget -c https://ice-wm.org/scripts/os-depends.sh
     sudo bash -x ./os-depends.sh
@@ -390,6 +405,9 @@ begin_installation() {
     cd ..
     sudo rm -r FeatherPad
 
+    # Start/Enable Systems
+    sudo systemctl enable ly.service
+
     # Start/Unmute Audio
     pulseaudio --start
     pacmd set-sink-volume 0 65536
@@ -408,16 +426,6 @@ begin_installation() {
     mkdir -p /home/$the_user/.icewm
     sudo chown -R $the_user:$the_user /home/$the_user/.icewm
     echo "Theme=\"IcePick/default.theme\"" >/home/$the_user/.icewm/theme
-
-    echo "Debug: Downloading LXDM Theme" >>/home/$the_user/debug.txt
-
-    # Download/Install LXDM Theme from GitHub
-    git clone https://github.com/ilnanny/XThemes.git
-    cd XThemes/Lxdm-themes
-    sudo mv adapta /usr/share/lxdm/themes/
-    cd ..
-    cd ..
-    sudo rm -r XThemes
 
     echo "Debug: Creating default folders" >>/home/$the_user/debug.txt
 
@@ -503,18 +511,6 @@ begin_installation() {
     chmod 664 /home/$the_user/.config/mimeapps.list
     chown $the_user:$the_user /home/$the_user/.config/mimeapps.list
 
-    # Download configuration file LXDM Login Setup
-    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/LoginReady
-    sudo mv -f LoginReady /etc/lxdm/LoginReady
-    sudo chmod 755 /etc/lxdm/LoginReady
-    sudo chown root:root /etc/lxdm/LoginReady
-
-    # Download configuration file for default LXDM configuration
-    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/default.conf
-    sudo mv -f default.conf /etc/lxdm/default.conf
-    sudo chmod 644 /etc/lxdm/default.conf
-    sudo chown root:root /etc/lxdm/default.conf
-
     # Navigate back to the user's home directory
     cd /home/$the_user
 
@@ -548,17 +544,6 @@ begin_installation() {
     chmod +x "/home/$the_user/.scripts/desktop_icon_scan.sh"
     chown $the_user:$the_user "/home/$the_user/.scripts"
     chown $the_user:$the_user "/home/$the_user/.scripts/desktop_icon_scan.sh"
-
-    echo "Debug: Creating/Setting Permissions for LXDM Resolution Configuration file/folder path >>/home/$the_user/debug.txt
-
-    # Create Folder for LXDM Resolution Configuration
-    sudo mkdir -p /var/lib/resolutions/
-
-    # Create File for LXDM Resolution Configuration
-    sudo touch /var/lib/resolutions/current.resolution
-    sudo chown root:root /var/lib/resolutions/ # Change ownership of the folder to root
-    sudo chmod 1777 /var/lib/resolutions/ # Set permissions for the folder
-    sudo chmod 666 /var/lib/resolutions/current.resolution # Set permissions for the file
 
     echo "Debug: Adding Startup Programs/Scripts" >>/home/$the_user/debug.txt
 

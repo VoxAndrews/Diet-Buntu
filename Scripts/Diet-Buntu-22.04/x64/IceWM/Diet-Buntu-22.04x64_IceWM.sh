@@ -287,9 +287,6 @@ begin_installation() {
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
 
-    # Add Repositories
-    sudo add-apt-repository -y ppa:jurplel/qview
-
     echo "Debug: Performing initial update and upgrade" >>/home/$the_user/debug.txt
 
     # Initial Update and Upgrade
@@ -297,7 +294,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -371,6 +368,13 @@ begin_installation() {
     sudo dpkg -i min*.deb
     sudo apt-get -f install
     rm min*.deb
+
+    # Download and Install Latest ParaPara Image Viewer
+    wget -qO- "https://api.github.com/repos/aharotias2/parapara/releases/latest" | jq -r '.assets[] | select(.name | endswith("x86-64.deb")) | .browser_download_url'
+    wget $(wget -qO- "https://api.github.com/repos/aharotias2/parapara/releases/latest" | jq -r '.assets[] | select(.name | endswith("x86-64.deb")) | .browser_download_url')
+    sudo dpkg -i parapara*.deb
+    sudo apt-get -f install
+    rm parapara*.deb
 
     echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 

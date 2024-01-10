@@ -618,7 +618,7 @@ begin_installation() {
     echo "Debug: Updating and upgrading software" >>/home/$the_user/debug.txt
 
     # Update and Upgrade Software
-    sudo apt update && sudo apt upgrade
+    sudo apt update -y && sudo apt upgrade -y
 
     echo "Debug: Cleaning and removing orphaned files/data" >>/home/$the_user/debug.txt
 

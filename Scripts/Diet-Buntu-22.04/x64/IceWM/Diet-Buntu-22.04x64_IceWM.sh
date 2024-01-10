@@ -264,6 +264,73 @@ prompt_for_clamav_daemon() {
     done
 }
 
+prompt_for_graphics_driver() {
+    clear
+    echo "Debug: Displaying Graphics Driver Menu" >>/home/$the_user/debug.txt
+
+    # Display a message about graphics driver selection
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo "GRAPHICS DRIVER SELECTION"
+    echo ""
+    echo "This option allows you to choose the best graphics driver for your system."
+    echo "1) AUTO-CONFIG: Lets the system automatically select and install the most suitable open-source drivers for your hardware. Ideal for general use and compatibility."
+    echo "2) NVIDIA (nouveau): Installs the open-source 'nouveau' drivers for NVIDIA GPUs. A good balance between performance and open-source principles, but may lack some features of proprietary drivers."
+    echo "3) AMD: Installs open-source drivers optimized for AMD GPUs. These are well-suited for most AMD graphics hardware and are regularly updated."
+    echo "4) Auto-Generate with X: Generates a new Xorg configuration file using 'X -configure', which can help resolve display issues or optimize settings. Useful if you're experiencing graphical issues or have a complex setup."
+    echo "5) Ubuntu Default Drivers: Installs drivers provided by default in Ubuntu, generally ensuring broad hardware support and stability, especially for new installations or less common hardware configurations."
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo ""
+
+    # Prompt the user for their choice of graphics driver
+    while true; do
+        echo "1) Auto-Config"
+        echo "2) NVIDIA (nouveau)"
+        echo "3) AMD"
+        echo "4) Auto-Generate with X"
+        echo "5) Ubuntu Default Drivers"
+        read -p "Select your option (1-5): " option
+
+        case $option in
+            1)
+                graphics_option="auto"
+                break
+                ;;
+            2)
+                graphics_option="nvidia"
+                break
+                ;;
+            3)
+                graphics_option="amd"
+                break
+                ;;
+            4)
+                graphics_option="x-config"
+                break
+                ;;
+            5)
+                graphics_option="ubuntu-default"
+                break
+                ;;
+            *) echo "Please enter a valid option (1-5)." ;;
+        esac
+    done
+}
+
+auto_install_graphics_driver() {
+    local gpu_info=$(lspci | grep -E "VGA|3D")
+
+    if [[ $gpu_info == *"NVIDIA"* ]]; then
+        echo "NVIDIA GPU detected. Using nouveau drivers..."
+        sudo apt install xserver-xorg-video-nouveau
+    elif [[ $gpu_info == *"AMD"* ]]; then
+        echo "AMD GPU detected. Installing AMD drivers..."
+        sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
+    else
+        echo "No specific GPU detected. Using default drivers..."
+        sudo ubuntu-drivers autoinstall
+    fi
+}
+
 install_packages() {
     local packages=("$@")
     sudo apt install -y "${packages[@]}"
@@ -331,6 +398,8 @@ begin_installation() {
         install_packages freecol openttd openttd-opensfx pingus frogatto
     fi
 
+    echo "Debug: Installing Printer Package" >>/home/$the_user/debug.txt
+
     if [ "$printer_option" == "1" ]; then
         echo "Debug: Installing the Printer Package" >>/home/$the_user/debug.txt
         # Install the Printer Package
@@ -349,6 +418,31 @@ begin_installation() {
 
         sudo systemctl stop clamav-daemon
         sudo systemctl disable clamav-daemon
+    fi
+
+    # Check the user's choice for the graphics driver
+    if [ "$graphics_option" == "auto" ]; then
+        echo "Debug: Automatically determining drivers" >>/home/$the_user/debug.txt
+        
+        auto_install_graphics_driver
+    elif [ "$graphics_option" == "nouveau" ]; then
+        echo "Debug: Installing NVIDIA Drivers" >>/home/$the_user/debug.txt
+        
+        sudo apt install xserver-xorg-video-nouveau
+    elif [ "$graphics_option" == "amd" ]; then
+        echo "Debug: Installing AMD Drivers" >>/home/$the_user/debug.txt
+        
+        sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
+    elif [ "$graphics_option" == "x-config" ]; then
+        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+        
+        sudo X -configure # This should be run outside of X session
+
+        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+    elif [ "$graphics_option" == "ubuntu-default" ]; then
+        echo "Debug: Installing default Ubuntu drivers" >>/home/$the_user/debug.txt
+
+        sudo ubuntu-drivers autoinstall
     fi
 
     echo "Debug: Downloading & Installing Software from .deb files" >>/home/$the_user/debug.txt
@@ -678,6 +772,7 @@ main() {
         prompt_for_entertainment_package
         prompt_for_printer_package
         prompt_for_clamav_daemon
+        prompt_for_graphics_driver
         begin_installation
         exit_message
     else

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Update package lists
+sudo apt-get update
+
+# Check for upgradable packages
+UPGRADES=$(apt list --upgradable 2>/dev/null | wc -l)
+
+if [ "$UPGRADES" -gt 1 ]; then
+    if zenity --question --title="Updates Available" --text="$((UPGRADES-1)) packages can be upgraded. Do you want to upgrade now?"; then
+        # Perform updates in a new terminal window
+        xterm -e "sudo apt-get upgrade"
+        zenity --info --text="Update completed!"
+    fi
+else
+    zenity --info --title="System Update" --text="Your system is up to date."
+fi

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=System Updater
+Exec=system_updater
+Icon=system-software-update
+Terminal=true
+Comment=This script is used to update the system for the user without needing to go into the terminal
+Categories=Utility;

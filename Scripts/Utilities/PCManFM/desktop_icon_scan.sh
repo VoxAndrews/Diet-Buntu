@@ -12,25 +12,34 @@ update_icons() {
     # Remove all symbolic links from the desktop directory
     find "$desktop_dir" -type l -exec rm {} \;
 
-    # Create new symbolic links
+    # Create new symbolic links from system applications directory
     for app in "$applications_dir"/*.desktop; do
-        # Extract the filename from the path
-        filename=$(basename "$app")
-
-        # Check if the file is in the exclude list
-        if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
-            ln -s "$app" "$desktop_dir"
-        fi
+        create_link "$app"
     done
+}
+
+# Function to create a symbolic link if the file is not excluded
+create_link() {
+    app=$1
+    filename=$(basename "$app")
+    if [[ ! " ${exclude[@]} " =~ " ${filename} " ]]; then
+        ln -s "$app" "$desktop_dir"
+    fi
 }
 
 # Initial update
 update_icons
 
-# Monitor the applications directory for changes
-inotifywait -m -e create,delete,modify,moved_to,moved_from "$applications_dir" | while read -r directory events filename; do
-    if [[ "$filename" == *.desktop ]]; then
-        update_icons
-    fi
-done
+# Function to monitor a directory
+monitor_directory() {
+    directory_to_monitor=$1
+    inotifywait -m -e create,delete,modify,moved_to,moved_from "$directory_to_monitor" | while read -r directory events filename; do
+        if [[ "$filename" == *.desktop ]]; then
+            update_icons
+        fi
+    done
+}
+
+# Monitor both directories in the background
+monitor_directory "$applications_dir" &
 EOF

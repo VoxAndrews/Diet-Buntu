@@ -297,7 +297,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools qview galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -511,12 +511,13 @@ begin_installation() {
     chmod 664 /home/$the_user/.config/mimeapps.list
     chown $the_user:$the_user /home/$the_user/.config/mimeapps.list
 
-    # Download configuration file for xterm
-    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/.Xresources
-    sudo mv -f .Xresources /home/$the_user/.Xresources
-    chmod 664 /home/$the_user/.Xresources
-    chown $the_user:$the_user /home/$the_user/.Xresources
-    xrdb -merge ~/.Xresources
+    # Download configuration files for system updater
+    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/system_updater.desktop
+    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Scripts/Utilities/system_updater
+    sudo mv system_updater /usr/local/bin/system_updater
+    sudo mv system_updater.desktop /usr/share/applications/system_updater.desktop
+    sudo chmod 755 /usr/local/bin/system_updater
+    sudo chmod 644 /usr/share/applications/system_updater.desktop
 
     # Navigate back to the user's home directory
     cd /home/$the_user
@@ -583,10 +584,6 @@ begin_installation() {
     echo "/usr/bin/lxpolkit &" >>/home/$the_user/.xsessionrc
     echo "cmst --minimized &" >>/home/$the_user/.xsessionrc
     echo "volumeicon &" >>/home/$the_user/.xsessionrc
-
-    echo "" >> /home/$the_user/.xsessionrc
-    echo "# Load XTerm configuration" >> /home/$the_user/.xsessionrc
-    echo "xrdb -merge /home/$the_user/.Xresources" >> /home/$the_user/.xsessionrc
 
     chown $the_user:$the_user /home/$the_user/.xsessionrc
 

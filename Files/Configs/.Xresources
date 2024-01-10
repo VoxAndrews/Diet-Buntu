@@ -1,7 +1,0 @@
-! Text and Background colours
-XTerm*background: black
-XTerm*foreground: white
-
-! Enable Right-hand scrollbar
-XTerm*rightScrollBar: true
-XTerm*scrollBar: true

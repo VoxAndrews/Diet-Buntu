@@ -361,7 +361,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity alsa-utils)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity alsa-utils chrony)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -395,7 +395,7 @@ begin_installation() {
     if [ "$entertainment_option" == "1" ]; then
         echo "Debug: Installing the Entertainment Package" >>/home/$the_user/debug.txt
 
-        install_packages freecol openttd openttd-opensfx pingus frogatto
+        install_packages freecol openttd openttd-opensfx pingus frogatto glew-utils libswt-gtk-4-java libportaudio2 fonts-ipafont-gothic fonts-ipafont-mincho fonts-indic timdity fluid-soundfont-gm
     fi
 
     echo "Debug: Installing Printer Package" >>/home/$the_user/debug.txt
@@ -462,13 +462,10 @@ begin_installation() {
     sudo dpkg -i min*.deb
     sudo apt-get -f install
     rm min*.deb
+    sudo xdg-settings set default-web-browser min.desktop && sudo update-alternatives --config x-www-browser # Set Min as default browser
 
-    # Download and Install Latest ParaPara Image Viewer
-    wget -qO- "https://api.github.com/repos/aharotias2/parapara/releases/latest" | jq -r '.assets[] | select(.name | endswith("x86-64.deb")) | .browser_download_url'
-    wget $(wget -qO- "https://api.github.com/repos/aharotias2/parapara/releases/latest" | jq -r '.assets[] | select(.name | endswith("x86-64.deb")) | .browser_download_url')
-    sudo dpkg -i parapara*.deb
-    sudo apt-get -f install
-    rm parapara*.deb
+    # Download and Install ParaPara Image Viewer
+    download_and_install_deb "https://github.com/aharotias2/parapara/releases/download/v3.2.10/parapara-3.2.10-1_x86-64.deb"
 
     echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 
@@ -616,6 +613,13 @@ begin_installation() {
     sudo mv system_updater.desktop /usr/share/applications/system_updater.desktop
     sudo chmod 755 /usr/local/bin/system_updater
     sudo chmod 644 /usr/share/applications/system_updater.desktop
+
+    # Download configuration file for Chrony
+    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/chrony.conf
+    mkdir -p /etc/chrony/
+    sudo mv -f chrony.conf /etc/chrony/chrony.conf
+    sudo chmod 644 /etc/chrony/chrony.conf
+    sudo chown root:root /etc/chrony/chrony.conf
 
     # Navigate back to the user's home directory
     cd /home/$the_user

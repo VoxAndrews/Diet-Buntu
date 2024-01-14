@@ -608,7 +608,7 @@ begin_installation() {
 
     # Download configuration files for system updater
     wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/system_updater.desktop
-    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Scripts/Utilities/system_updater
+    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Scripts/Utilities/system_updater
     sudo mv system_updater /usr/local/bin/system_updater
     sudo mv system_updater.desktop /usr/share/applications/system_updater.desktop
     sudo chmod 755 /usr/local/bin/system_updater

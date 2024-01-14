@@ -11,15 +11,13 @@ I wanted a project and have always been fascinated with things like Tiny Core Li
 I wanted to make sure this came with a few different things so people could have access to a wide range of packages, either from official Ubuntu repositories, unofficial repositories, or built from source. These packages include:
 
 - IceWM
-- git
-- nano
 - VLC
 - PCManFM
 - Free Office
 - Claws Mail
 - qView
 - galculator
-- GNOME Software
+- Appgrid
 - ClamAV
 - ...And so much more!
 
@@ -40,17 +38,21 @@ The script will create a few default folders for you (Pictures, Documents, Video
 #### IceWM (Ice Window Manager)
 `wget https://github.com/VoxAndrews/Diet-Buntu/raw/main/Scripts/Diet-Buntu-22.04/x64/IceWM/Diet-Buntu-22.04x64_IceWM.sh`
 
+## In-Development Features
+- Multi-Monitor Support (Currently only one monitor is supported)
+- Automatic NTP Setup (The user at the moment must manually input their timezone location in the terminal)
+
 ## Known Bugs
 - Installing the OS in a Virtual Machine (E.g. VirtualBox or Hyper-V) and playing some games may cause weird mouse behaviour in games (E.g. The camera in some First-Person games will spin uncontrollably). Not sure if this will carry over onto real hardware at this time.
-- Changing the screen's resolution with LXRandR will cause the current wallpaper to disappear/revert to the current theme's default. This can be fixed by going to 'Logout...->Restart Icewm' for now, or by rebooting the system as a last measure. This will only occur when changing the screens resolution
+- If you try to plug more than one monitor in, windows will start ghosting
 
 <details>
 <summary><b>Screenshots</b></summary>
 <br>
-<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot1-Background_1.png" width="720">
-<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot4-Ly_1.png" width="720">
-<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot5-Desktop_1.png" width="720">
-<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot5-Desktop_2.png" width="720">
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot1-Ly_1.png" width="720">
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot2-Desktop_1.png" width="720">
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot3-Desktop_2.png" width="720">
+<img src="https://github.com/VoxAndrews/Diet-Buntu/raw/main/Images/Screenshots/Screenshot4-Desktop_3.png" width="720">
 </details>
 
 **Diet-Buntu is not affiliated with Ubuntu and represents a fan-made modification of a pre-existing distribution.**

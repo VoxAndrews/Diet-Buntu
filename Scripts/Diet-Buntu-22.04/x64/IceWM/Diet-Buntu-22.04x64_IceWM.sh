@@ -395,7 +395,7 @@ begin_installation() {
     if [ "$entertainment_option" == "1" ]; then
         echo "Debug: Installing the Entertainment Package" >>/home/$the_user/debug.txt
 
-        install_packages freecol openttd openttd-opensfx pingus frogatto glew-utils libswt-gtk-4-java libportaudio2 fonts-ipafont-gothic fonts-ipafont-mincho fonts-indic timidity fluid-soundfont-gm
+        install_packages freecol openttd openttd-opensfx pingus frogatto glew-utils libswt-gtk-4-java libportaudio2 fonts-ipafont-gothic fonts-ipafont-mincho fonts-indic fluid-soundfont-gm
     fi
 
     echo "Debug: Installing Printer Package" >>/home/$the_user/debug.txt

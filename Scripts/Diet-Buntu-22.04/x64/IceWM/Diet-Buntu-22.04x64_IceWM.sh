@@ -697,6 +697,13 @@ begin_installation() {
     sudo chmod 644 /etc/chrony/chrony.conf
     sudo chown root:root /etc/chrony/chrony.conf
 
+    # Download configuration file for resolved.conf
+    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/resolved.conf
+    mkdir -p /etc/systemd/
+    sudo mv -f resolved.conf /etc/systemd/resolved.conf
+    sudo chmod 644 /etc/systemd/resolved.conf
+    sudo chown root:root /etc/systemd/resolved.conf
+
     # Navigate back to the user's home directory
     cd /home/$the_user
 

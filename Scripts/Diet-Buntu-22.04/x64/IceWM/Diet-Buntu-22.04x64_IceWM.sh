@@ -423,19 +423,19 @@ begin_installation() {
     # Check the user's choice for the graphics driver
     if [ "$graphics_option" == "auto" ]; then
         echo "Debug: Automatically determining drivers" >>/home/$the_user/debug.txt
-        
+
         auto_install_graphics_driver
     elif [ "$graphics_option" == "nouveau" ]; then
         echo "Debug: Installing NVIDIA Drivers" >>/home/$the_user/debug.txt
-        
+
         sudo apt install xserver-xorg-video-nouveau
     elif [ "$graphics_option" == "amd" ]; then
         echo "Debug: Installing AMD Drivers" >>/home/$the_user/debug.txt
-        
+
         sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
     elif [ "$graphics_option" == "x-config" ]; then
         echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-        
+
         sudo X -configure # This should be run outside of X session
 
         sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
@@ -449,23 +449,99 @@ begin_installation() {
 
     # Download and Install Software from .deb files
 
-    # Download and Install Latest Clamtk
-    wget -qO- "https://api.github.com/repos/dave-theunsub/clamtk/releases/latest" | jq -r '.assets[] | select(.name | endswith("all.deb")) | .browser_download_url'
-    wget $(wget -qO- "https://api.github.com/repos/dave-theunsub/clamtk/releases/latest" | jq -r '.assets[] | select(.name | endswith("all.deb")) | .browser_download_url')
-    sudo dpkg -i clamtk*.deb
-    sudo apt-get -f install
-    rm clamtk*.deb
+    # Download and Install Latest ClamTk
+    wget -qO- "https://api.github.com/repos/dave-theunsub/clamtk/releases/latest" | jq -r '.assets[] | select(.name | endswith("all.deb")) | .browser_download_url' | xargs wget -O clamtk-latest.deb
+    if [ ! -f "clamtk-latest.deb" ]; then
+        echo "Debug: ERROR: Downloading the latest version of ClamTk failed. Trying fallback URL" >>/home/$the_user/debug.txt
+
+        wget "https://github.com/dave-theunsub/clamtk/releases/download/v6.17/clamtk_6.17-1_all.deb" -O clamtk-latest.deb
+    fi
+
+    if [ -f "clamtk-latest.deb" ]; then
+        sudo dpkg -i clamtk-latest.deb
+        sudo apt-get -f install
+        rm clamtk-latest.deb
+
+        echo "Debug: ClamTk Successfully Installed!" >>/home/$the_user/debug.txt
+    else
+        echo "Debug: ERROR: Failed to download ClamTk" >>/home/$the_user/debug.txt
+
+        exit 1
+    fi
 
     # Download and Install Latest Min Browser
-    wget -qO- "https://api.github.com/repos/minbrowser/min/releases/latest" | jq -r '.assets[] | select(.name | endswith("amd64.deb")) | .browser_download_url'
-    wget $(wget -qO- "https://api.github.com/repos/minbrowser/min/releases/latest" | jq -r '.assets[] | select(.name | endswith("amd64.deb")) | .browser_download_url')
-    sudo dpkg -i min*.deb
-    sudo apt-get -f install
-    rm min*.deb
-    sudo xdg-settings set default-web-browser min.desktop && sudo update-alternatives --config x-www-browser # Set Min as default browser
+    wget -qO- "https://api.github.com/repos/minbrowser/min/releases/latest" | jq -r '.assets[] | select(.name | endswith("amd64.deb")) | .browser_download_url' | xargs wget -O min-browser-latest.deb
+    if [ ! -f "min-browser-latest.deb" ]; then
+        echo "Debug: ERROR: Downloading the latest version of Min failed. Trying fallback URL" >>/home/$the_user/debug.txt
+
+        wget "https://github.com/minbrowser/min/releases/download/v1.30.0/min-1.30.0-amd64.deb" -O min-browser-latest.deb
+    fi
+
+    if [ -f "min-browser-latest.deb" ]; then
+        sudo dpkg -i min-browser-latest.deb
+        sudo apt-get -f install
+        rm min-browser-latest.deb
+
+        echo "Debug: Min Browser Successfully Installed! Configuring..." >>/home/$the_user/debug.txt
+
+        # Set Min as the default browser
+        sudo xdg-settings set default-web-browser min.desktop && sudo update-alternatives --config x-www-browser
+
+        # Check and Update Min default settings
+        min_settings="/home/$the_user/.config/Min/settings.json"
+
+        if [ -f "$min_settings" ]; then
+            if jq -e '.showDividerBetweenTabs' "$min_settings" >/dev/null; then
+                jq '.showDividerBetweenTabs = true' "$min_settings" >temp.json && mv temp.json "$min_settings"
+            else
+                echo "Debug: ERROR: 'showDividerBetweenTabs' setting not found in Min settings." >>/home/$the_user/debug.txt
+            fi
+
+            if jq -e '.enableAutoplay' "$min_settings" >/dev/null; then
+                jq '.enableAutoplay = true' "$min_settings" >temp.json && mv temp.json "$min_settings"
+            else
+                echo "Debug: ERROR: 'enableAutoplay' setting not found in Min settings." >>/home/$the_user/debug.txt
+            fi
+
+            if jq -e '.searchEngine' "$min_settings" >/dev/null; then
+                jq '.searchEngine.name = "Google"' "$min_settings" >temp.json && mv temp.json "$min_settings"
+            else
+                echo "Debug: ERROR: 'searchEngine' setting not found in Min settings." >>/home/$the_user/debug.txt
+            fi
+
+            if jq -e '.startupTabOption' "$min_settings" >/dev/null; then
+                jq '.startupTabOption = 1' "$min_settings" >temp.json && mv temp.json "$min_settings"
+            else
+                echo "Debug: ERROR: 'startupTabOption' setting not found in Min settings." >>/home/$the_user/debug.txt
+            fi
+        else
+            echo "Debug: ERROR: Min settings file not found. Continuing without changing settings." >>/home/$the_user/debug.txt
+        fi
+    else
+        echo "Debug: ERROR: Failed to download Min browser" >>/home/$the_user/debug.txt
+
+        exit 1
+    fi
 
     # Download and Install ParaPara Image Viewer
-    download_and_install_deb "https://github.com/aharotias2/parapara/releases/download/v3.2.10/parapara-3.2.10-1_x86-64.deb"
+    wget -qO- "https://api.github.com/repos/aharotias2/parapara/releases/latest" | jq -r '.assets[] | select(.name | endswith("x86-64.deb")) | .browser_download_url' | xargs wget -O parapara-latest.deb
+    if [ ! -f "parapara-latest.deb" ]; then
+        echo "Debug: ERROR: Downloading the latest version of Parapara failed. Trying fallback URL" >>/home/$the_user/debug.txt
+
+        wget "https://github.com/aharotias2/parapara/releases/download/v3.2.10/parapara-3.2.10-1_x86-64.deb" -O parapara-latest.deb
+    fi
+
+    if [ -f "parapara-latest.deb" ]; then
+        sudo dpkg -i parapara-latest.deb
+        sudo apt-get -f install
+        rm parapara-latest.deb
+
+        echo "Debug: Parapara Successfully Installed!" >>/home/$the_user/debug.txt
+    else
+        echo "Debug: ERROR: Failed to download Parapara" >>/home/$the_user/debug.txt
+
+        exit 1
+    fi
 
     echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 

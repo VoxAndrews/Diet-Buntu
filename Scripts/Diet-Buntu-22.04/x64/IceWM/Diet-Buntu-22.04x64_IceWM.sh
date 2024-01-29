@@ -450,6 +450,7 @@ begin_installation() {
     # Download and Install Software from .deb files
 
     # Download and Install Latest ClamTk
+    echo "Debug: Starting Download/Install of ClamTk" >>/home/$the_user/debug.txt
     wget -qO- "https://api.github.com/repos/dave-theunsub/clamtk/releases/latest" | jq -r '.assets[] | select(.name | endswith("all.deb")) | .browser_download_url' | xargs wget -O clamtk-latest.deb
     if [ ! -f "clamtk-latest.deb" ]; then
         echo "Debug: ERROR: Downloading the latest version of ClamTk failed. Trying fallback URL" >>/home/$the_user/debug.txt
@@ -470,6 +471,7 @@ begin_installation() {
     fi
 
     # Download and Install Latest Min Browser
+    echo "Debug: Starting Download/Install of Min Browser" >>/home/$the_user/debug.txt
     wget -qO- "https://api.github.com/repos/minbrowser/min/releases/latest" | jq -r '.assets[] | select(.name | endswith("amd64.deb")) | .browser_download_url' | xargs wget -O min-browser-latest.deb
     if [ ! -f "min-browser-latest.deb" ]; then
         echo "Debug: ERROR: Downloading the latest version of Min failed. Trying fallback URL" >>/home/$the_user/debug.txt
@@ -524,6 +526,7 @@ begin_installation() {
     fi
 
     # Download and Install ParaPara Image Viewer
+    echo "Debug: Starting Download/Install of ParaPara Image Viewer" >>/home/$the_user/debug.txt
     wget -qO- "https://api.github.com/repos/aharotias2/parapara/releases/latest" | jq -r '.assets[] | select(.name | endswith("x86-64.deb")) | .browser_download_url' | xargs wget -O parapara-latest.deb
     if [ ! -f "parapara-latest.deb" ]; then
         echo "Debug: ERROR: Downloading the latest version of Parapara failed. Trying fallback URL" >>/home/$the_user/debug.txt
@@ -543,33 +546,51 @@ begin_installation() {
         exit 1
     fi
 
-    echo "Debug: Building software from source" >>/home/$the_user/debug.txt
-
-    # Download and Install/Build Ly Display Manager
-    git clone --recurse-submodules https://github.com/fairyglade/ly
-    cd ly
-    make
-    sudo make install installsystemd
-    cd ..
-    sudo rm -r ly
-
     # Download and Install IceWM 3.4.5
+    echo "Debug: Starting Download/Install of ParaPara Image Viewer" >>/home/$the_user/debug.txt
     wget "https://github.com/ice-wm/icewm/releases/download/3.4.5/icewm-3.4.5.tar.lz" -O icewm-3.4.5.tar.lz
     if [ -f "icewm-3.4.5.tar.lz" ]; then
         tar --lzip -xf icewm-3.4.5.tar.lz
         cd icewm-3.4.5
+
         wget -c https://ice-wm.org/scripts/os-depends.sh
         sudo bash -x ./os-depends.sh
         sudo ./configure
         sudo make
         sudo make DESTDIR="$pkgdir" install
+
         echo "Debug: IceWM 3.4.5 Successfully Installed!" >>/home/$the_user/debug.txt
+
         cd ..
         sudo rm -rf icewm-3.4.5
     else
         echo "Debug: ERROR: Failed to download IceWM 3.4.5" >>/home/$the_user/debug.txt
+
         exit 1
     fi
+
+    # Download and Install/Build Ly Display Manager v0.6.0
+    echo "Debug: Starting Download/Install of Ly Display Manager" >>/home/$the_user/debug.txt
+    wget "https://github.com/fairyglade/ly/archive/refs/tags/v0.6.0.zip" -O ly-0.6.0.zip
+    if [ -f "ly-0.6.0.zip" ]; then
+        unzip ly-0.6.0.zip
+        cd ly-0.6.0
+
+        make
+        sudo make install installsystemd
+        sudo systemctl enable ly.service
+
+        echo "Debug: Ly Display Manager v0.6.0 Successfully Installed!" >>/home/$the_user/debug.txt
+
+        cd ..
+        sudo rm -rf ly-0.6.0
+    else
+        echo "Debug: ERROR: Failed to download Ly Display Manager v0.6.0" >>/home/$the_user/debug.txt
+
+        exit 1
+    fi
+
+    echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 
     git clone https://github.com/tsujan/FeatherPad.git
     cd FeatherPad
@@ -580,9 +601,6 @@ begin_installation() {
     cd ..
     cd ..
     sudo rm -r FeatherPad
-
-    # Start/Enable Systems
-    sudo systemctl enable ly.service
 
     # Start/Unmute Audio
     pulseaudio --start

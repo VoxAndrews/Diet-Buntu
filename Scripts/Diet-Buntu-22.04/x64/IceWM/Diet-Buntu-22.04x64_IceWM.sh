@@ -264,6 +264,48 @@ prompt_for_clamav_daemon() {
     done
 }
 
+prompt_for_connman_service() {
+    clear
+    echo "Debug: Displaying ConnMan Service message" >>/home/$the_user/debug.txt
+
+    # Display a message about enabling or disabling ConnMan Wait for Network Service
+    echo ""
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo "CONNMAN WAIT FOR NETWORK SERVICE"
+    echo ""
+    echo "Your system uses ConnMan to manage network connections. During startup, a"
+    echo "service waits for ConnMan to configure the network before continuing. This"
+    echo "can cause delays, especially if there's no immediate network connection (e.g.,"
+    echo "if you need to manually connect to Wi-Fi)."
+    echo ""
+    echo "Disabling this service will allow your system to boot without waiting for a"
+    echo "network connection, but it might affect other network-dependent services."
+    echo ""
+    echo "You can always re-enable this service by running:"
+    echo ""
+    echo "sudo systemctl enable connman-wait-online.service"
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo ""
+
+    # Prompt the user for their choice to enable or disable the ConnMan service
+    while true; do
+        read -p "Do you want to disable ConnMan Wait for Network Service? (Y/N): " yn
+        case $yn in
+            [Yy]*)
+                connman_service_option=1
+                # Disable the ConnMan service
+                sudo systemctl disable connman-wait-online.service
+                break
+                ;;
+            [Nn]*)
+                connman_service_option=0
+                break
+                ;;
+            *) echo "Please answer Y or N." ;;
+        esac
+    done
+}
+
 prompt_for_graphics_driver() {
     clear
     echo "Debug: Displaying Graphics Driver Menu" >>/home/$the_user/debug.txt
@@ -420,6 +462,14 @@ begin_installation() {
         sudo systemctl disable clamav-daemon
     fi
 
+    # Check if the user wants to disable the ConnMan Wait for Network Service
+    if [ "$connman_service_option" == "1" ]; then
+        echo "Debug: Disabling ConnMan Wait for Network Service" >>/home/$the_user/debug.txt
+
+        sudo systemctl stop connman-wait-online.service
+        sudo systemctl disable connman-wait-online.service
+    fi
+
     # Check the user's choice for the graphics driver
     if [ "$graphics_option" == "auto" ]; then
         echo "Debug: Automatically determining drivers" >>/home/$the_user/debug.txt
@@ -527,26 +577,20 @@ begin_installation() {
 
     # Download and Install ParaPara Image Viewer
     echo "Debug: Starting Download/Install of ParaPara Image Viewer" >>/home/$the_user/debug.txt
-    wget -qO- "https://api.github.com/repos/aharotias2/parapara/releases/latest" | jq -r '.assets[] | select(.name | endswith("x86-64.deb")) | .browser_download_url' | xargs wget -O parapara-latest.deb
-    if [ ! -f "parapara-latest.deb" ]; then
-        echo "Debug: ERROR: Downloading the latest version of Parapara failed. Trying fallback URL" >>/home/$the_user/debug.txt
-
-        wget "https://github.com/aharotias2/parapara/releases/download/v3.2.10/parapara-3.2.10-1_x86-64.deb" -O parapara-latest.deb
-    fi
-
+    wget "https://github.com/aharotias2/parapara/releases/download/v3.2.10/parapara-3.2.10-1_x86-64.deb" -O parapara-latest.deb
     if [ -f "parapara-latest.deb" ]; then
         sudo dpkg -i parapara-latest.deb
         sudo apt-get -f install
         rm parapara-latest.deb
 
-        echo "Debug: Parapara Successfully Installed!" >>/home/$the_user/debug.txt
+        echo "Debug: ParaPara Successfully Installed!" >>/home/$the_user/debug.txt
     else
-        echo "Debug: ERROR: Failed to download Parapara" >>/home/$the_user/debug.txt
+        echo "Debug: ERROR: Failed to download ParaPara" >>/home/$the_user/debug.txt
 
         exit 1
     fi
 
-    # Download and Install IceWM 3.4.5
+    # Download and Install IceWM
     echo "Debug: Starting Download/Install of ParaPara Image Viewer" >>/home/$the_user/debug.txt
     wget "https://github.com/ice-wm/icewm/releases/download/3.4.5/icewm-3.4.5.tar.lz" -O icewm-3.4.5.tar.lz
     if [ -f "icewm-3.4.5.tar.lz" ]; then
@@ -569,29 +613,24 @@ begin_installation() {
         exit 1
     fi
 
-    # Download and Install/Build Ly Display Manager v0.6.0
-    echo "Debug: Starting Download/Install of Ly Display Manager" >>/home/$the_user/debug.txt
-    wget "https://github.com/fairyglade/ly/archive/refs/tags/v0.6.0.zip" -O ly-0.6.0.zip
-    if [ -f "ly-0.6.0.zip" ]; then
-        unzip ly-0.6.0.zip
-        cd ly-0.6.0
-
-        make
-        sudo make install installsystemd
-        sudo systemctl enable ly.service
-
-        echo "Debug: Ly Display Manager v0.6.0 Successfully Installed!" >>/home/$the_user/debug.txt
-
-        cd ..
-        sudo rm -rf ly-0.6.0
-    else
-        echo "Debug: ERROR: Failed to download Ly Display Manager v0.6.0" >>/home/$the_user/debug.txt
-
-        exit 1
-    fi
-
     echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 
+    # Download and Install/Build Ly Display Manager v0.6.0
+    echo "Debug: Starting Download/Install of Ly Display Manager" >>/home/$the_user/debug.txt
+
+    git clone --branch v0.6.0 --recurse-submodules https://github.com/fairyglade/ly ly-0.6.0
+    cd ly-0.6.0
+
+    make
+    sudo make install installsystemd
+    sudo systemctl enable ly.service
+
+    echo "Debug: Ly Display Manager v0.6.0 Successfully Installed!" >>/home/$the_user/debug.txt
+
+    cd ..
+    sudo rm -rf ly-0.6.0
+
+    # Download and Install/Build FeatherPad
     git clone https://github.com/tsujan/FeatherPad.git
     cd FeatherPad
     mkdir build && cd build
@@ -882,6 +921,7 @@ main() {
         prompt_for_entertainment_package
         prompt_for_printer_package
         prompt_for_clamav_daemon
+        prompt_for_connman_service
         prompt_for_graphics_driver
         begin_installation
         exit_message

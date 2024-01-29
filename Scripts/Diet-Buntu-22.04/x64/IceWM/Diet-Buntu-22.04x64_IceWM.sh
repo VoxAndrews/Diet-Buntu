@@ -553,18 +553,23 @@ begin_installation() {
     cd ..
     sudo rm -r ly
 
-    # Download and Install/Build IceWM
-    git clone https://github.com/bbidulock/icewm.git
-    wget -c https://ice-wm.org/scripts/os-depends.sh
-    sudo bash -x ./os-depends.sh
-    cd icewm
-    sudo ./autogen.sh
-    sudo ./configure
-    sudo make
-    sudo make DESTDIR="$pkgdir" install
-    cd ..
-    sudo rm -r icewm
-    sudo rm -r os-depends.sh
+    # Download and Install IceWM 3.4.5
+    wget "https://github.com/ice-wm/icewm/releases/download/3.4.5/icewm-3.4.5.tar.lz" -O icewm-3.4.5.tar.lz
+    if [ -f "icewm-3.4.5.tar.lz" ]; then
+        tar --lzip -xf icewm-3.4.5.tar.lz
+        cd icewm-3.4.5
+        wget -c https://ice-wm.org/scripts/os-depends.sh
+        sudo bash -x ./os-depends.sh
+        sudo ./configure
+        sudo make
+        sudo make DESTDIR="$pkgdir" install
+        echo "Debug: IceWM 3.4.5 Successfully Installed!" >>/home/$the_user/debug.txt
+        cd ..
+        sudo rm -rf icewm-3.4.5
+    else
+        echo "Debug: ERROR: Failed to download IceWM 3.4.5" >>/home/$the_user/debug.txt
+        exit 1
+    fi
 
     git clone https://github.com/tsujan/FeatherPad.git
     cd FeatherPad

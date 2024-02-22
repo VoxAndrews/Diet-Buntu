@@ -366,6 +366,9 @@ prompt_for_automatic_drivers() {
     echo "for your system. This is recommended for most users, especially those who"
     echo "are new to Linux or have little experience with driver management."
     echo ""
+    echo "The automatic system will use ubuntu-drivers to find and install the most"
+    echo "suitable drivers for your hardware."
+    echo ""
     echo "If you're an advanced user or have specific requirements, you can choose to"
     echo "manually install drivers later, but this may require additional knowledge"
     echo "and effort."
@@ -404,11 +407,10 @@ prompt_for_graphics_driver() {
     echo "GRAPHICS DRIVER SELECTION"
     echo ""
     echo "This option allows you to choose the best graphics driver for your system."
-    echo "1) AUTO-CONFIG: Lets the system automatically select and install the most suitable open-source drivers for your hardware. Ideal for general use and compatibility."
-    echo "2) NVIDIA (nouveau): Installs the open-source 'nouveau' drivers for NVIDIA GPUs. A good balance between performance and open-source principles, but may lack some features of proprietary drivers."
-    echo "3) AMD: Installs open-source drivers optimized for AMD GPUs. These are well-suited for most AMD graphics hardware and are regularly updated."
-    echo "4) Auto-Generate with X: Generates a new Xorg configuration file using 'X -configure', which can help resolve display issues or optimize settings. Useful if you're experiencing graphical issues or have a complex setup."
-    echo "5) Ubuntu Default Drivers: Installs drivers provided by default in Ubuntu, generally ensuring broad hardware support and stability, especially for new installations or less common hardware configurations."
+    echo "1) AUTO-CONFIG: Lets the system automatically select and install the most suitable open-source drivers for your hardware."
+    echo "2) NVIDIA (nouveau): Installs the open-source 'nouveau' drivers for NVIDIA GPUs."
+    echo "3) AMD: Installs open-source drivers optimized for AMD GPUs."
+    echo "4) Generic VESA Drivers: Installs generic VESA drivers. These should be replaced with proper drivers if available."
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
 
@@ -417,8 +419,8 @@ prompt_for_graphics_driver() {
         echo "1) Auto-Config"
         echo "2) NVIDIA (nouveau)"
         echo "3) AMD"
-        echo "4) Auto-Generate with X"
-        read -p "Select your option (1-5): " option
+        echo "4) Generic VESA Drivers"
+        read -p "Select your option (1-4): " option
 
         case $option in
             1)

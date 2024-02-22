@@ -353,6 +353,47 @@ prompt_for_connman_service() {
     done
 }
 
+prompt_for_picom_compositor() {
+    clear
+    echo "Debug: Displaying Picom message" >>/home/$the_user/debug.txt
+
+    # Display a message about enabling or disabling Picom
+    echo ""
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo "PICOM - COMPOSITOR FOR X"
+    echo ""
+    echo "Picom is a standalone compositor for X, and a fork of Compton. It's used to"
+    echo "provide window transparency and shadows, as well as other visual effects."
+    echo ""
+    echo "Disabling Picom will remove these visual effects, which can improve"
+    echo "performance on older systems. However, the performance impact is minimal on"
+    echo "most modern systems, and the visual effects can enhance the user experience."
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo ""
+
+    # Prompt the user for their choice to enable or disable Picom
+    while true; do
+        read -p "Do you want to enable Picom? (Y/N): " yn
+        case $yn in
+            [Yy]*)
+                picom_option=1
+
+                echo "Debug: User chose to enable Picom" >>/home/$the_user/debug.txt
+
+                break
+                ;;
+            [Nn]*)
+                picom_option=0
+
+                echo "Debug: User chose not to enable Picom" >>/home/$the_user/debug.txt
+
+                break
+                ;;
+            *) echo "Please answer Y or N." ;;
+        esac
+    done
+}
+
 prompt_for_automatic_drivers() {
     clear
     echo "Debug: Displaying Automatic Driver Installation message" >>/home/$the_user/debug.txt
@@ -605,6 +646,27 @@ begin_installation() {
 
         sudo systemctl stop connman-wait-online.service
         sudo systemctl disable connman-wait-online.service
+    fi
+
+    # Check if the user wants to enable Picom
+    if [ "$picom_option" == "1" ]; then
+        echo "Debug: Enabling Picom" >>/home/$the_user/debug.txt
+
+        sudo apt install picom
+
+        echo "Debug: Installing default picom configuration" >>/home/$the_user/debug.txt
+
+        # Install default picom configuration
+        wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/picom.conf
+        mkdir -p /home/$the_user/.config/picom/
+        sudo mv -f picom.conf /home/$the_user/.config/picom/picom.conf
+        chmod 664 /home/$the_user/.config/picom/picom.conf
+        chown $the_user:$the_user /home/$the_user/.config/picom/picom.conf
+
+        echo "Debug: Enabling picom service" >>/home/$the_user/debug.txt
+
+        sudo systemctl start picom
+        sudo systemctl enable picom
     fi
 
     # Check the user's choice for the graphics driver
@@ -1071,6 +1133,7 @@ main() {
         prompt_for_printer_package
         prompt_for_clamav_daemon
         prompt_for_connman_service
+        prompt_for_picom_compositor
         prompt_for_automatic_drivers
 
         # Check whether the user wants to automatically install drivers or not

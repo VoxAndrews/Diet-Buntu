@@ -634,7 +634,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity alsa-utils chrony libgee-0.8-2 libgranite-common libgranite6)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity alsa-utils chrony libgee-0.8-2 libgranite-common libgranite6 featherpad icewm)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package
@@ -779,27 +779,6 @@ begin_installation() {
         exit 1
     fi
 
-    # Download and Install Latest mx-datetime
-    echo "Debug: Starting Download/Install of mx-datetime" >>/home/$the_user/debug.txt
-    wget -qO- "https://api.github.com/repos/MX-Linux/mx-datetime/contents/" | jq -r '.[] | select(.name | endswith("_amd64.deb")) | .download_url' | xargs wget -O mx-datetime-latest.deb
-    if [ ! -f "mx-datetime-latest.deb" ]; then
-        echo "Debug: ERROR: Downloading the latest version of mx-datetime failed." >>/home/$the_user/debug.txt
-
-        exit 1
-    fi
-
-    if [ -f "mx-datetime-latest.deb" ]; then
-        sudo dpkg -i mx-datetime-latest.deb
-        sudo apt-get -f install
-        rm mx-datetime-latest.deb
-
-        echo "Debug: mx-datetime Successfully Installed!" >>/home/$the_user/debug.txt
-    else
-        echo "Debug: ERROR: Failed to download mx-datetime" >>/home/$the_user/debug.txt
-
-        exit 1
-    fi
-
     # Download and Install Latest Min Browser
     echo "Debug: Starting Download/Install of Min Browser" >>/home/$the_user/debug.txt
     wget "https://github.com/minbrowser/min/releases/download/v1.31.1/min-1.31.1-amd64.deb" -O min-latest.deb
@@ -833,29 +812,6 @@ begin_installation() {
         exit 1
     fi
 
-    # Download and Install IceWM
-    echo "Debug: Starting Download/Install of ParaPara Image Viewer" >>/home/$the_user/debug.txt
-    wget "https://github.com/ice-wm/icewm/releases/download/3.4.5/icewm-3.4.5.tar.lz" -O icewm-3.4.5.tar.lz
-    if [ -f "icewm-3.4.5.tar.lz" ]; then
-        tar --lzip -xf icewm-3.4.5.tar.lz
-        cd icewm-3.4.5
-
-        wget -c https://ice-wm.org/scripts/os-depends.sh
-        sudo bash -x ./os-depends.sh
-        sudo ./configure
-        sudo make
-        sudo make DESTDIR="$pkgdir" install
-
-        echo "Debug: IceWM 3.4.5 Successfully Installed!" >>/home/$the_user/debug.txt
-
-        cd ..
-        sudo rm -rf icewm-3.4.5
-    else
-        echo "Debug: ERROR: Failed to download IceWM 3.4.5" >>/home/$the_user/debug.txt
-
-        exit 1
-    fi
-
     echo "Debug: Building software from source" >>/home/$the_user/debug.txt
 
     # Download and Install/Build Ly Display Manager v0.6.0
@@ -872,17 +828,6 @@ begin_installation() {
 
     cd ..
     sudo rm -rf ly-0.6.0
-
-    # Download and Install/Build FeatherPad
-    git clone https://github.com/tsujan/FeatherPad.git
-    cd FeatherPad
-    mkdir build && cd build
-    cmake ..
-    make
-    sudo make install
-    cd ..
-    cd ..
-    sudo rm -r FeatherPad
 
     # Start/Unmute Audio
     pulseaudio --start
@@ -995,14 +940,6 @@ begin_installation() {
     sudo chmod 755 /usr/local/bin/system_updater
     sudo chmod 644 /usr/share/applications/system_updater.desktop
 
-    # Download configuration file for Chrony
-    wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/chrony.conf
-    mkdir -p /etc/chrony/
-    sudo mv -f chrony.conf /etc/chrony/chrony.conf
-    sudo chmod 644 /etc/chrony/chrony.conf
-    sudo chown root:root /etc/chrony/chrony.conf
-    sudo systemctl restart chrony # Restart the chrony service to apply the changes
-
     # Download configuration file for resolved.conf
     wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/resolved.conf
     mkdir -p /etc/systemd/
@@ -1014,7 +951,7 @@ begin_installation() {
     cd /home/$the_user
 
     # Append the lines to the preferences file, using the value of $theme_option
-    echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option\nClockCommand=mx-datetime" >>/home/$the_user/.icewm/preferences
+    echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >>/home/$the_user/.icewm/preferences
 
     # Create the .config directory if it doesn't exist
     if [ ! -d "/home/$the_user/.config" ]; then

@@ -25,10 +25,11 @@ display_welcome_message() {
 
     # Display the welcome message
     echo "///////////////////////////////////////////////////////////////////////////"
-    echo "Welcome to the Diet-Buntu Installer - Version 22.04 (x64)"
+    echo "Welcome to the Diet-Buntu Installer!"
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
-    echo "Diet-Buntu is a streamlined version of the renowned Ubuntu operating system."
+    echo "Diet-Buntu is a streamlined version of the Ubuntu operating system."
+    echo ""
     echo "Designed with efficiency in mind, it stands parallel to other lightweight"
     echo "distributions like Xubuntu and Lubuntu. However, what sets Diet-Buntu apart"
     echo "is its unique construction: it's built from scratch using an Ubuntu Server"
@@ -73,8 +74,13 @@ check_internet_connection() {
 
     if wget --timeout=10 -q --spider http://google.com; then
         echo "Internet connection detected."
+
+        echo "Debug: Internet connection detected" >>/home/$the_user/debug.txt
     else
         echo "No internet connection detected. Please ensure you're connected to the internet and try again."
+
+        echo "Debug: No internet connection detected" >>/home/$the_user/debug.txt
+
         exit 1
     fi
 }
@@ -91,6 +97,13 @@ prompt_for_themes_menu() {
     echo "This option will allow you to enable or disable the themes menu in IceWM."
     echo "Themes are ways of giving your OS a new look, and there are a few to choose"
     echo "from by default, as well as others online."
+    echo ""
+    echo "Websites like box-look.org and gnome-look.org have a variety of themes to"
+    echo "choose from, and you can download and install them to your system. However,"
+    echo "keep in mind that some themes may not work as expected, and some may even"
+    echo "cause issues with your system. It's recommended to only download themes from"
+    echo "trusted sources and to always have a backup theme in case something goes"
+    echo "wrong."
     echo "///////////////////////////////////////////////////////////////////////////"
     echo ""
 
@@ -100,10 +113,16 @@ prompt_for_themes_menu() {
         case $yn in
             [Yy]*)
                 theme_option=1
+
+                echo "Debug: User chose to enable Themes Menu" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             [Nn]*)
                 theme_option=0
+
+                echo "Debug: User chose to disable Themes Menu" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             *) echo "Please answer Y or N." ;;
@@ -134,10 +153,16 @@ prompt_for_utility_software_package() {
         case $yn in
             [Yy]*)
                 utility_option=1
+
+                echo "Debug: User chose to install the Utility Software Package" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             [Nn]*)
                 utility_option=0
+
+                echo "Debug: User chose not to install the Utility Software Package" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             *) echo "Please answer Y or N." ;;
@@ -171,10 +196,16 @@ prompt_for_entertainment_package() {
         case $yn in
             [Yy]*)
                 entertainment_option=1
+
+                echo "Debug: User chose to install the Entertainment Package" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             [Nn]*)
                 entertainment_option=0
+
+                echo "Debug: User chose not to install the Entertainment Package" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             *) echo "Please answer Y or N." ;;
@@ -209,10 +240,16 @@ prompt_for_printer_package() {
         case $yn in
             [Yy]*)
                 printer_option=1
+
+                echo "Debug: User chose to install the Printer Package" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             [Nn]*)
                 printer_option=0
+
+                echo "Debug: User chose not to install the Printer Package" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             *) echo "Please answer Y or N." ;;
@@ -253,10 +290,16 @@ prompt_for_clamav_daemon() {
         case $yn in
             [Yy]*)
                 clamav_option=1
+
+                echo "Debug: User chose to disable ClamAV Background Daemon" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             [Nn]*)
                 clamav_option=0
+
+                echo "Debug: User chose not to disable ClamAV Background Daemon" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             *) echo "Please answer Y or N." ;;
@@ -293,12 +336,58 @@ prompt_for_connman_service() {
         case $yn in
             [Yy]*)
                 connman_service_option=1
-                # Disable the ConnMan service
-                sudo systemctl disable connman-wait-online.service
+
+                echo "Debug: User chose to disable ConnMan Wait for Network Service" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             [Nn]*)
                 connman_service_option=0
+
+                echo "Debug: User chose not to disable ConnMan Wait for Network Service" >>/home/$the_user/debug.txt
+
+                break
+                ;;
+            *) echo "Please answer Y or N." ;;
+        esac
+    done
+}
+
+prompt_for_automatic_drivers() {
+    clear
+    echo "Debug: Displaying Automatic Driver Installation message" >>/home/$the_user/debug.txt
+
+    # Display a message about automatic driver installation
+    echo ""
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo "AUTOMATIC DRIVER INSTALLATION"
+    echo ""
+    echo "This option allows you to automatically find and install the best drivers"
+    echo "for your system. This is recommended for most users, especially those who"
+    echo "are new to Linux or have little experience with driver management."
+    echo ""
+    echo "If you're an advanced user or have specific requirements, you can choose to"
+    echo "manually install drivers later, but this may require additional knowledge"
+    echo "and effort."
+    echo "///////////////////////////////////////////////////////////////////////////"
+    echo ""
+
+    # Prompt the user for their choice to find and install the best drivers for their system automatically or not
+    while true; do
+        read -p "Do you want to automatically find and install system drivers? (Y/N): " yn
+        case $yn in
+            [Yy]*)
+                automatic_drivers_option=1
+
+                echo "Debug: User chose to automatically find and install system drivers" >>/home/$the_user/debug.txt
+
+                break
+                ;;
+            [Nn]*)
+                automatic_drivers_option=0
+
+                echo "Debug: User chose not to automatically find and install system drivers" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             *) echo "Please answer Y or N." ;;
@@ -329,31 +418,38 @@ prompt_for_graphics_driver() {
         echo "2) NVIDIA (nouveau)"
         echo "3) AMD"
         echo "4) Auto-Generate with X"
-        echo "5) Ubuntu Default Drivers"
         read -p "Select your option (1-5): " option
 
         case $option in
             1)
                 graphics_option="auto"
+
+                echo "Debug: User chose to automatically find and install graphics drivers" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             2)
                 graphics_option="nvidia"
+
+                echo "Debug: User chose to install NVIDIA (nouveau) drivers" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             3)
                 graphics_option="amd"
+
+                echo "Debug: User chose to install AMD drivers" >>/home/$the_user/debug.txt
+
                 break
                 ;;
             4)
-                graphics_option="x-config"
+                graphics_option="generic"
+
+                echo "Debug: User chose to install generic VESA drivers" >>/home/$the_user/debug.txt
+
                 break
                 ;;
-            5)
-                graphics_option="ubuntu-default"
-                break
-                ;;
-            *) echo "Please enter a valid option (1-5)." ;;
+            *) echo "Please enter a valid option (1-4)." ;;
         esac
     done
 }
@@ -362,14 +458,53 @@ auto_install_graphics_driver() {
     local gpu_info=$(lspci | grep -E "VGA|3D")
 
     if [[ $gpu_info == *"NVIDIA"* ]]; then
+        echo "Debug: Automatically detected GPU: NVIDIA" >>/home/$the_user/debug.txt
+
         echo "NVIDIA GPU detected. Using nouveau drivers..."
+
         sudo apt install xserver-xorg-video-nouveau
+
+        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+        sudo X -configure # This should be run outside of X session
+
+        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
     elif [[ $gpu_info == *"AMD"* ]]; then
+        echo "Debug: Automatically detected GPU: AMD" >>/home/$the_user/debug.txt
+
         echo "AMD GPU detected. Installing AMD drivers..."
+
         sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
-    else
-        echo "No specific GPU detected. Using default drivers..."
-        sudo ubuntu-drivers autoinstall
+
+        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+        sudo X -configure # This should be run outside of X session
+
+        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+    elif [[ $gpu_info == *"Intel"* ]]; then
+        echo "Debug: Automatically detected GPU: Intel" >>/home/$the_user/debug.txt
+
+        echo "Intel GPU detected. Installing Intel drivers..."
+
+        sudo apt install xserver-xorg-video-intel
+
+        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+        sudo X -configure # This should be run outside of X session
+
+        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+        elseif
+        echo "Debug: Automatic GPU detection failed. Installing generic VESA drivers (These should be replaced with proper drivers if available)" >>/home/$the_user/debug.txt
+
+        echo "No specific GPU detected. Installing generic VESA drivers (These should be replaced with proper drivers if available)"
+
+        sudo apt install xserver-xorg-video-vesa
+
+        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+        sudo X -configure # This should be run outside of X session
+
+        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
     fi
 }
 
@@ -479,20 +614,32 @@ begin_installation() {
         echo "Debug: Installing NVIDIA Drivers" >>/home/$the_user/debug.txt
 
         sudo apt install xserver-xorg-video-nouveau
-    elif [ "$graphics_option" == "amd" ]; then
-        echo "Debug: Installing AMD Drivers" >>/home/$the_user/debug.txt
 
-        sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
-    elif [ "$graphics_option" == "x-config" ]; then
         echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
 
         sudo X -configure # This should be run outside of X session
 
         sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
-    elif [ "$graphics_option" == "ubuntu-default" ]; then
-        echo "Debug: Installing default Ubuntu drivers" >>/home/$the_user/debug.txt
+    elif [ "$graphics_option" == "amd" ]; then
+        echo "Debug: Installing AMD Drivers" >>/home/$the_user/debug.txt
 
-        sudo ubuntu-drivers autoinstall
+        sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
+
+        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+        sudo X -configure # This should be run outside of X session
+
+        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+    elif [ "$graphics_option" == "generic" ]; then
+        echo "Debug: Installing Generic Drivers (These should be replaced with proper drivers if available)" >>/home/$the_user/debug.txt
+
+        sudo apt install xserver-xorg-video-vesa
+
+        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+        sudo X -configure # This should be run outside of X session
+
+        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
     fi
 
     echo "Debug: Downloading & Installing Software from .deb files" >>/home/$the_user/debug.txt
@@ -922,7 +1069,18 @@ main() {
         prompt_for_printer_package
         prompt_for_clamav_daemon
         prompt_for_connman_service
-        prompt_for_graphics_driver
+        prompt_for_automatic_drivers
+
+        # Check whether the user wants to automatically install drivers or not
+        if [ "$automatic_drivers_option" == "1" ]; then
+            echo "Debug: Automatically installing drivers" >>/home/$the_user/debug.txt
+
+            # Automatically install drivers
+            sudo ubuntu-drivers autoinstall
+        elif [ "$automatic_drivers_option" == "0" ]; then
+            prompt_for_graphics_driver
+        fi
+
         begin_installation
         exit_message
     else

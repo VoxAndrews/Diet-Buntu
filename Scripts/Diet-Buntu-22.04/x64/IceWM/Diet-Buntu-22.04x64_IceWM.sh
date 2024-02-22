@@ -85,6 +85,59 @@ check_internet_connection() {
     fi
 }
 
+select_timezone() {
+    clear
+    echo "Debug: Displaying timezone selection dialog" >>/home/$the_user/debug.txt
+
+    tempfile=$(mktemp) # Create a temporary file to store the list of timezones
+    tempout=$(mktemp) # Create a temporary file to capture the user's selection
+
+    timedatectl list-timezones >$tempfile # Save the list to the temporary file
+
+    confirmed=0 # Set the confirmed flag to 0 (false) to start the loop
+
+    echo "Debug: Prompting user to select timezone" >>/home/$the_user/debug.txt
+
+    while [ $confirmed -eq 0 ]; do
+        # Use dialog to present the list to the user and capture the selection
+        dialog --title "Select your timezone" --menu "Choose one" 25 80 17 $(awk '{print NR " " $0}' $tempfile) 2>$tempout
+        response=$? # Get the exit status
+
+        if [ $response -eq 1 ]; then
+            # User pressed Cancel or closed the dialog window
+            clear
+
+            echo "Debug: Timezone selection cancelled" >>/home/$the_user/debug.txt
+
+            echo "Timezone selection cancelled."
+
+            rm $tempfile $tempout # Clean up
+
+            exit 1
+        fi
+
+        selected_timezone=$(<"$tempout") # Read the user's selection from the file
+        timezone=$(sed "${selected_timezone}q;d" $tempfile) # Get the timezone from the list
+
+        # Ask for confirmation
+        dialog --title "Confirmation" --yesno "Are you sure you want to set the timezone to $timezone?" 7 60
+        if [ $? -eq 0 ]; then
+            # User confirmed
+            echo "Debug: Timezone confirmed: $timezone" >>/home/$the_user/debug.txt
+
+            sudo timedatectl set-ntp true # Enable NTP to ensure the system clock is accurate
+
+            sudo timedatectl set-timezone "$timezone" # Set the timezone
+
+            echo "Timezone updated to $timezone." 
+
+            confirmed=1
+        fi
+    done
+
+    rm $tempfile $tempout # Clean up
+}
+
 prompt_for_themes_menu() {
     clear
     echo "Debug: Displaying Themes Menu" >>/home/$the_user/debug.txt
@@ -953,6 +1006,7 @@ begin_installation() {
     sudo mv -f chrony.conf /etc/chrony/chrony.conf
     sudo chmod 644 /etc/chrony/chrony.conf
     sudo chown root:root /etc/chrony/chrony.conf
+    sudo systemctl restart chrony # Restart the chrony service to apply the changes
 
     # Download configuration file for resolved.conf
     wget -c https://github.com/VoxAndrews/Diet-Buntu/raw/main/Files/Configs/resolved.conf
@@ -1109,6 +1163,7 @@ main() {
     install_initial_packages
     display_welcome_message
     prompt_continue_installation
+    select_timezone
 
     if [ "$choice" == "y" ]; then
         prompt_for_themes_menu

@@ -715,11 +715,6 @@ begin_installation() {
         sudo mv -f picom.conf /home/$the_user/.config/picom/picom.conf
         chmod 664 /home/$the_user/.config/picom/picom.conf
         chown $the_user:$the_user /home/$the_user/.config/picom/picom.conf
-
-        echo "Debug: Enabling picom service" >>/home/$the_user/debug.txt
-
-        sudo systemctl start picom
-        sudo systemctl enable picom
     fi
 
     # Check the user's choice for the graphics driver
@@ -1060,6 +1055,7 @@ begin_installation() {
     echo "" >>/home/$the_user/.xsessionrc
     echo "# Execute the extracted command" >>/home/$the_user/.xsessionrc
     echo "eval \$xrandr_command" >>/home/$the_user/.xsessionrc
+    echo "" >>/home/$the_user/.xsessionrc
 
     echo "" >>/home/$the_user/.xsessionrc
 
@@ -1080,6 +1076,7 @@ begin_installation() {
     echo "/usr/bin/lxpolkit &" >>/home/$the_user/.xsessionrc
     echo "cmst --minimized &" >>/home/$the_user/.xsessionrc
     echo "volumeicon &" >>/home/$the_user/.xsessionrc
+    echo "picom &" >>/home/$the_user/.xsessionrc
 
     chown $the_user:$the_user /home/$the_user/.xsessionrc
 

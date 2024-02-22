@@ -731,55 +731,39 @@ begin_installation() {
         exit 1
     fi
 
-    # Download and Install Latest Min Browser
-    echo "Debug: Starting Download/Install of Min Browser" >>/home/$the_user/debug.txt
-    wget -qO- "https://api.github.com/repos/minbrowser/min/releases/latest" | jq -r '.assets[] | select(.name | endswith("amd64.deb")) | .browser_download_url' | xargs wget -O min-browser-latest.deb
-    if [ ! -f "min-browser-latest.deb" ]; then
-        echo "Debug: ERROR: Downloading the latest version of Min failed. Trying fallback URL" >>/home/$the_user/debug.txt
+    # Download and Install Latest mx-datetime
+    echo "Debug: Starting Download/Install of mx-datetime" >>/home/$the_user/debug.txt
+    wget -qO- "https://api.github.com/repos/MX-Linux/mx-datetime/contents/" | jq -r '.[] | select(.name | endswith("_amd64.deb")) | .download_url' | xargs wget -O mx-datetime-latest.deb
+    if [ ! -f "mx-datetime-latest.deb" ]; then
+        echo "Debug: ERROR: Downloading the latest version of mx-datetime failed." >>/home/$the_user/debug.txt
 
-        wget "https://github.com/minbrowser/min/releases/download/v1.30.0/min-1.30.0-amd64.deb" -O min-browser-latest.deb
+        exit 1
     fi
 
-    if [ -f "min-browser-latest.deb" ]; then
-        sudo dpkg -i min-browser-latest.deb
+    if [ -f "mx-datetime-latest.deb" ]; then
+        sudo dpkg -i mx-datetime-latest.deb
         sudo apt-get -f install
-        rm min-browser-latest.deb
+        rm mx-datetime-latest.deb
+
+        echo "Debug: mx-datetime Successfully Installed!" >>/home/$the_user/debug.txt
+    else
+        echo "Debug: ERROR: Failed to download mx-datetime" >>/home/$the_user/debug.txt
+
+        exit 1
+    fi
+
+    # Download and Install Latest Min Browser
+    echo "Debug: Starting Download/Install of Min Browser" >>/home/$the_user/debug.txt
+    wget "https://github.com/minbrowser/min/releases/download/v1.31.1/min-1.31.1-amd64.deb" -O min-latest.deb
+    if [ -f "min-latest.deb" ]; then
+        sudo dpkg -i min-latest.deb
+        sudo apt-get -f install
+        rm min-latest.deb
 
         echo "Debug: Min Browser Successfully Installed! Configuring..." >>/home/$the_user/debug.txt
 
         # Set Min as the default browser
         sudo xdg-settings set default-web-browser min.desktop && sudo update-alternatives --config x-www-browser
-
-        # Check and Update Min default settings
-        min_settings="/home/$the_user/.config/Min/settings.json"
-
-        if [ -f "$min_settings" ]; then
-            if jq -e '.showDividerBetweenTabs' "$min_settings" >/dev/null; then
-                jq '.showDividerBetweenTabs = true' "$min_settings" >temp.json && mv temp.json "$min_settings"
-            else
-                echo "Debug: ERROR: 'showDividerBetweenTabs' setting not found in Min settings." >>/home/$the_user/debug.txt
-            fi
-
-            if jq -e '.enableAutoplay' "$min_settings" >/dev/null; then
-                jq '.enableAutoplay = true' "$min_settings" >temp.json && mv temp.json "$min_settings"
-            else
-                echo "Debug: ERROR: 'enableAutoplay' setting not found in Min settings." >>/home/$the_user/debug.txt
-            fi
-
-            if jq -e '.searchEngine' "$min_settings" >/dev/null; then
-                jq '.searchEngine.name = "Google"' "$min_settings" >temp.json && mv temp.json "$min_settings"
-            else
-                echo "Debug: ERROR: 'searchEngine' setting not found in Min settings." >>/home/$the_user/debug.txt
-            fi
-
-            if jq -e '.startupTabOption' "$min_settings" >/dev/null; then
-                jq '.startupTabOption = 1' "$min_settings" >temp.json && mv temp.json "$min_settings"
-            else
-                echo "Debug: ERROR: 'startupTabOption' setting not found in Min settings." >>/home/$the_user/debug.txt
-            fi
-        else
-            echo "Debug: ERROR: Min settings file not found. Continuing without changing settings." >>/home/$the_user/debug.txt
-        fi
     else
         echo "Debug: ERROR: Failed to download Min browser" >>/home/$the_user/debug.txt
 
@@ -981,7 +965,7 @@ begin_installation() {
     cd /home/$the_user
 
     # Append the lines to the preferences file, using the value of $theme_option
-    echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option" >>/home/$the_user/.icewm/preferences
+    echo -e "\n# Diet-Buntu Changes\nShowThemesMenu=$theme_option\nClockCommand=mx-datetime" >>/home/$the_user/.icewm/preferences
 
     # Create the .config directory if it doesn't exist
     if [ ! -d "/home/$the_user/.config" ]; then

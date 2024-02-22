@@ -52,8 +52,8 @@ display_welcome_message() {
     echo "Ubuntu Version: 22.04 (Jammy Jellyfish)"
     echo "Architecture: x86-64"
     echo "Window Manager: IceWM"
-    echo "Version: 1.2"
-    echo "Script Date: 10/10/2023 (07:07pm AWST)"
+    echo "Version: 1.0"
+    echo "Script Date: 23/02/2023 (12:20am AWST)"
     echo ""
     echo "Would you like to continue?"
 }
@@ -90,7 +90,7 @@ select_timezone() {
     echo "Debug: Displaying timezone selection dialog" >>/home/$the_user/debug.txt
 
     tempfile=$(mktemp) # Create a temporary file to store the list of timezones
-    tempout=$(mktemp) # Create a temporary file to capture the user's selection
+    tempout=$(mktemp)  # Create a temporary file to capture the user's selection
 
     timedatectl list-timezones >$tempfile # Save the list to the temporary file
 
@@ -116,7 +116,7 @@ select_timezone() {
             exit 1
         fi
 
-        selected_timezone=$(<"$tempout") # Read the user's selection from the file
+        selected_timezone=$(<"$tempout")                    # Read the user's selection from the file
         timezone=$(sed "${selected_timezone}q;d" $tempfile) # Get the timezone from the list
 
         # Ask for confirmation
@@ -129,7 +129,7 @@ select_timezone() {
 
             sudo timedatectl set-timezone "$timezone" # Set the timezone
 
-            echo "Timezone updated to $timezone." 
+            echo "Timezone updated to $timezone."
 
             confirmed=1
         fi
@@ -634,7 +634,7 @@ begin_installation() {
 
     echo "Debug: Installing software and libraries from Ubuntu" >>/home/$the_user/debug.txt
 
-    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity alsa-utils chrony libgee-0.8-2 libgranite-common libgranite6 featherpad icewm)
+    local ubuntu_packages=(git build-essential libpam0g-dev libxcb1-dev xorg nano libgl1-mesa-dri lua5.3 vlc libgtk2.0-0 xterm pcmanfm pulseaudio pavucontrol gvfs-backends gvfs-fuse qtbase5-dev libqt5x11extras5-dev libqt5svg5-dev libhunspell-dev qttools5-dev-tools galculator lxrandr clamav clamav-daemon libtext-csv-perl libjson-perl gnome-icon-theme cron libcommon-sense-perl libencode-perl libjson-xs-perl libtext-csv-xs-perl libtypes-serialiser-perl libcairo-gobject-perl libcairo-perl libextutils-depends-perl libglib-object-introspection-perl libglib-perl libgtk3-perl libfont-freetype-perl libxml-libxml-perl inotify-tools acpi lxappearance iputils-ping dbus connman connman-doc cmst libimlib2 libqt5printsupport5 policykit-1 lxpolkit xarchiver qpdfview volumeicon-alsa gdebi jq arc-theme zenity alsa-utils chrony libgee-0.8-2 libgranite-common libgranite6 featherpad icewm xscreensaver-data-extra xscreensaver-gl-extra)
     install_packages "${ubuntu_packages[@]}"
 
     # Check the user's choice for the Utility Software Package

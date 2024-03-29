@@ -513,8 +513,9 @@ prompt_for_graphics_driver() {
         echo "1) Auto-Config"
         echo "2) NVIDIA (nouveau)"
         echo "3) AMD"
-        echo "4) Generic VESA Drivers"
-        read -p "Select your option (1-4): " option
+        echo "4) Intel"
+        echo "5) Generic VESA Drivers"
+        read -p "Select your option (1-5): " option
 
         case $option in
             1)
@@ -539,13 +540,20 @@ prompt_for_graphics_driver() {
                 break
                 ;;
             4)
+                graphics_option="intel"
+
+                echo "Debug: User chose to install Intel drivers" >>/home/$the_user/debug.txt
+
+                break
+                ;;
+            5)
                 graphics_option="generic"
 
                 echo "Debug: User chose to install generic VESA drivers" >>/home/$the_user/debug.txt
 
                 break
                 ;;
-            *) echo "Please enter a valid option (1-4)." ;;
+            *) echo "Please enter a valid option (1-5)." ;;
         esac
     done
 }
@@ -553,55 +561,44 @@ prompt_for_graphics_driver() {
 auto_install_graphics_driver() {
     local gpu_info=$(lspci | grep -E "VGA|3D")
 
+    # Check if gpu_info is empty
+    if [ -z "$gpu_info" ]; then
+        echo "No GPU detected. Exiting..." >>/home/$the_user/debug.txt
+
+        exit 1
+    fi
+
     if [[ $gpu_info == *"NVIDIA"* ]]; then
         echo "Debug: Automatically detected GPU: NVIDIA" >>/home/$the_user/debug.txt
 
         echo "NVIDIA GPU detected. Using nouveau drivers..."
 
-        sudo apt install xserver-xorg-video-nouveau
-
-        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-
-        sudo X -configure # This should be run outside of X session
-
-        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+        sudo apt install xserver-xorg-video-nouveau mesa-utils mesa-vulkan-drivers libgl1-mesa-dri libgl1-mesa-glx
     elif [[ $gpu_info == *"AMD"* ]]; then
         echo "Debug: Automatically detected GPU: AMD" >>/home/$the_user/debug.txt
 
         echo "AMD GPU detected. Installing AMD drivers..."
 
-        sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
-
-        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-
-        sudo X -configure # This should be run outside of X session
-
-        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+        sudo apt install mesa-utils mesa-vulkan-drivers mesa-vdpau-drivers libgl1-mesa-dri libgl1-mesa-glx
     elif [[ $gpu_info == *"Intel"* ]]; then
         echo "Debug: Automatically detected GPU: Intel" >>/home/$the_user/debug.txt
 
         echo "Intel GPU detected. Installing Intel drivers..."
 
-        sudo apt install xserver-xorg-video-intel
+        sudo apt install mesa-utils mesa-vulkan-drivers libgl1-mesa-dri libgl1-mesa-glx intel-media-va-driver
 
-        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-
-        sudo X -configure # This should be run outside of X session
-
-        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
-        elseif
         echo "Debug: Automatic GPU detection failed. Installing generic VESA drivers (These should be replaced with proper drivers if available)" >>/home/$the_user/debug.txt
 
         echo "No specific GPU detected. Installing generic VESA drivers (These should be replaced with proper drivers if available)"
 
         sudo apt install xserver-xorg-video-vesa
-
-        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-
-        sudo X -configure # This should be run outside of X session
-
-        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
     fi
+
+    echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+    sudo X -configure # This should be run outside of X session
+
+    sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
 }
 
 install_packages() {
@@ -725,34 +722,26 @@ begin_installation() {
     elif [ "$graphics_option" == "nouveau" ]; then
         echo "Debug: Installing NVIDIA Drivers" >>/home/$the_user/debug.txt
 
-        sudo apt install xserver-xorg-video-nouveau
-
-        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-
-        sudo X -configure # This should be run outside of X session
-
-        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+        sudo apt install xserver-xorg-video-nouveau mesa-utils mesa-vulkan-drivers libgl1-mesa-dri libgl1-mesa-glx
     elif [ "$graphics_option" == "amd" ]; then
         echo "Debug: Installing AMD Drivers" >>/home/$the_user/debug.txt
 
-        sudo apt install mesa-vulkan-drivers mesa-vdpau-drivers
+        sudo apt install mesa-utils mesa-vulkan-drivers mesa-vdpau-drivers libgl1-mesa-dri libgl1-mesa-glx
+    elif [ "$graphics_option" == "intel" ]; then
+        echo "Debug: Installing Intel Drivers" >>/home/$the_user/debug.txt
 
-        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-
-        sudo X -configure # This should be run outside of X session
-
-        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
+        sudo apt install mesa-utils mesa-vulkan-drivers libgl1-mesa-dri libgl1-mesa-glx intel-media-va-driver
     elif [ "$graphics_option" == "generic" ]; then
         echo "Debug: Installing Generic Drivers (These should be replaced with proper drivers if available)" >>/home/$the_user/debug.txt
 
         sudo apt install xserver-xorg-video-vesa
-
-        echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
-
-        sudo X -configure # This should be run outside of X session
-
-        sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
     fi
+
+    echo "Debug: Running X Configure" >>/home/$the_user/debug.txt
+
+    sudo X -configure # This should be run outside of X session
+
+    sudo mv /root/xorg.conf.new /etc/X11/xorg.conf
 
     echo "Debug: Downloading & Installing Software from .deb files" >>/home/$the_user/debug.txt
 
@@ -781,7 +770,7 @@ begin_installation() {
 
     # Download and Install Latest Min Browser
     echo "Debug: Starting Download/Install of Min Browser" >>/home/$the_user/debug.txt
-    wget "https://github.com/minbrowser/min/releases/download/v1.31.1/min-1.31.1-amd64.deb" -O min-latest.deb
+    wget "https://github.com/minbrowser/min/releases/download/v1.31.2/min-1.31.2-amd64.deb" -O min-latest.deb
     if [ -f "min-latest.deb" ]; then
         sudo dpkg -i min-latest.deb
         sudo apt-get -f install

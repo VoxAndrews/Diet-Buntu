@@ -801,23 +801,6 @@ begin_installation() {
         exit 1
     fi
 
-    echo "Debug: Building software from source" >>/home/$the_user/debug.txt
-
-    # Download and Install/Build Ly Display Manager v0.6.0
-    echo "Debug: Starting Download/Install of Ly Display Manager" >>/home/$the_user/debug.txt
-
-    git clone --branch v0.6.0 --recurse-submodules https://github.com/fairyglade/ly ly-0.6.0
-    cd ly-0.6.0
-
-    make
-    sudo make install installsystemd
-    sudo systemctl enable ly.service
-
-    echo "Debug: Ly Display Manager v0.6.0 Successfully Installed!" >>/home/$the_user/debug.txt
-
-    cd ..
-    sudo rm -rf ly-0.6.0
-
     # Start/Unmute Audio
     pulseaudio --start
     pacmd set-sink-volume 0 65536
